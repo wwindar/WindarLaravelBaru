@@ -123,6 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'admin_api_token' => env('ADMIN_API_TOKEN', 'petugas-rahasia-123'),
+    'admin_api_token' => env('ADMIN_API_TOKEN', 'redaksi-rahasia-123'),
 
 ];
