@@ -73,7 +73,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        // Hapus semua token milik user agar tidak ada token yang masih aktif.
+        $request->user()->tokens()->delete();
 
         return response()->json([
             'message' => 'Logout berhasil.',

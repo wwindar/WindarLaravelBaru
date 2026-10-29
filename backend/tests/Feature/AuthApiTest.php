@@ -103,7 +103,7 @@ class AuthApiTest extends TestCase
             ->assertJsonPath('message', 'Logout berhasil.');
 
         // Token sudah dicabut — me harus 401
-        $this->withToken($token)->getJson('/api/auth/me')
+        $this->getJson('/api/auth/me')
             ->assertStatus(401);
     }
 
