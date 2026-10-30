@@ -12,8 +12,70 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Login admin — kembalikan Bearer token Sanctum.
-     * Hanya user dengan role "admin" yang boleh masuk.
+     * Registrasi akun mahasiswa / penulis baru khusus civitas UMPKU.
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name'     => ['required', 'string', 'max:100'],
+            'email'    => [
+                'required',
+                'email',
+                'unique:users,email',
+                'max:150',
+                function ($attribute, $value, $fail) {
+                    $domain = strtolower(substr(strrchr($value, '@'), 1));
+                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id'];
+                    
+                    $isAllowed = false;
+                    foreach ($allowedDomains as $allowed) {
+                        if ($domain === $allowed || str_ends_with($domain, '.' . $allowed)) {
+                            $isAllowed = true;
+                            break;
+                        }
+                    }
+
+                    if (! $isAllowed) {
+                        $fail('Pendaftaran naskah hanya dibuka untuk mahasiswa civitas akademika UMPKU (wajib menggunakan email kampus @umpku.ac.id atau @student.umpku.ac.id).');
+                    }
+                },
+            ],
+            'password' => ['required', 'string', 'min:6'],
+        ], [
+            'name.required'     => 'Nama lengkap wajib diisi.',
+            'email.required'    => 'Email kampus wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'email.unique'      => 'Email ini sudah terdaftar. Silakan langsung masuk.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min'      => 'Kata sandi minimal 6 karakter.',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => strtolower($validated['email']),
+            'password' => Hash::make($validated['password']),
+            'role'     => 'penulis',
+        ]);
+
+        $token = $user->createToken('aksara-kampus-user')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Pendaftaran berhasil. Selamat datang di Aksara Kampus UMPKU!',
+            'data'    => [
+                'token'      => $token,
+                'token_type' => 'Bearer',
+                'user'       => [
+                    'id'    => $user->id,
+                    'name'  => $user->name,
+                    'email' => $user->email,
+                    'role'  => $user->role,
+                ],
+            ],
+        ], 201);
+    }
+
+    /**
+     * Login admin atau mahasiswa — kembalikan Bearer token Sanctum.
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -25,27 +87,22 @@ class AuthController extends Controller
             ], 401);
         }
 
-        if (! $user->isAdmin()) {
-            return response()->json([
-                'message' => 'Akun ini tidak memiliki hak akses redaksi.',
-            ], 403);
-        }
-
         // Hapus token lama agar tidak menumpuk
         $user->tokens()->delete();
 
-        $token = $user->createToken('aksara-kampus-redaksi')->plainTextToken;
+        $tokenName = $user->isAdmin() ? 'aksara-kampus-redaksi' : 'aksara-kampus-user';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'message' => 'Login berhasil. Selamat datang di Aksara Kampus.',
-            'data' => [
-                'token' => $token,
+            'data'    => [
+                'token'      => $token,
                 'token_type' => 'Bearer',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
+                'user'       => [
+                    'id'    => $user->id,
+                    'name'  => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role,
+                    'role'  => $user->role,
                 ],
             ],
         ]);

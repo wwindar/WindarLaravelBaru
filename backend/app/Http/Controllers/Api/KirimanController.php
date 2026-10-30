@@ -124,5 +124,21 @@ class KirimanController extends Controller
 
         return new KaryaResource($karya);
     }
+
+    /**
+     * Get list of works submitted by the logged in student/writer.
+     */
+    public function karyaSaya(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $karya = Karya::with('riwayat')
+            ->where('email', $user->email)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'data' => KaryaResource::collection($karya),
+        ]);
+    }
 }
 

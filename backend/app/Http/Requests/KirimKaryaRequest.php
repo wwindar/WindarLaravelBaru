@@ -29,7 +29,28 @@ class KirimKaryaRequest extends FormRequest
             'jenis' => ['required', 'string', 'in:puisi,cerpen,esai'],
             'isi' => ['required', 'string', 'min:50'],
             'nama_penulis' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $domain = strtolower(substr(strrchr($value, '@'), 1));
+                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id', 'student.univ.ac.id'];
+                    
+                    $isAllowed = false;
+                    foreach ($allowedDomains as $allowed) {
+                        if ($domain === $allowed || str_ends_with($domain, '.' . $allowed)) {
+                            $isAllowed = true;
+                            break;
+                        }
+                    }
+
+                    if (! $isAllowed) {
+                        $fail('Hanya mahasiswa civitas akademika UMPKU yang dapat mengirimkan naskah (gunakan email kampus @umpku.ac.id / @student.umpku.ac.id).');
+                    }
+                },
+            ],
         ];
     }
 

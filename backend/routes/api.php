@@ -13,14 +13,16 @@ use App\Http\Controllers\Api\KirimanController;
 use Illuminate\Support\Facades\Route;
 
 // =========================================================================
-// Auth Endpoints (Login / Logout Redaksi)
+// Auth Endpoints (Login / Register / Logout)
 // =========================================================================
 Route::prefix('auth')->group(function (): void {
+    Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/karya-saya', [KirimanController::class, 'karyaSaya']);
     });
 });
 
