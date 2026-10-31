@@ -13,8 +13,9 @@
           </div>
           <h1 class="text-xl font-bold text-white">Gabung Aksara Kampus</h1>
           <p class="text-sm text-slate-400 mt-1">Khusus Mahasiswa & Civitas UMPKU</p>
-          <div class="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
-            🔒 Wajib menggunakan email resmi kampus: <strong class="text-white">@umpku.ac.id</strong> atau <strong class="text-white">@student.umpku.ac.id</strong>
+          <div class="mt-3 p-2.5 rounded-lg bg-ochre-400/10 border border-ochre-400/20 text-xs text-ochre-300">
+            🔒 Wajib menggunakan email resmi kampus: <br>
+            <strong class="text-white">@students.itspku.ac.id</strong>, <strong class="text-white">@itspku.ac.id</strong>, atau <strong class="text-white">@student.umpku.ac.id</strong>
           </div>
         </div>
 
@@ -35,15 +36,33 @@
           </div>
 
           <div>
-            <label class="label">Email Resmi Kampus UMPKU</label>
+            <label class="label">Username</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ochre-400 font-mono text-sm">@</span>
+              <input
+                v-model="form.username"
+                type="text"
+                class="input pl-8 font-mono text-sm"
+                placeholder="sekar_kinanti"
+                pattern="^[a-zA-Z0-9_-]+$"
+                minlength="3"
+                maxlength="30"
+                required
+              />
+            </div>
+            <p class="text-[11px] text-parchment-500 mt-1">Hanya huruf, angka, strip, atau garis bawah (min. 3 karakter)</p>
+          </div>
+
+          <div>
+            <label class="label">Email Resmi Kampus</label>
             <input
               v-model="form.email"
               type="email"
               class="input"
-              placeholder="nim@student.umpku.ac.id"
+              placeholder="nim@students.itspku.ac.id"
               required
             />
-            <p class="text-[11px] text-slate-500 mt-1">Gunakan format @umpku.ac.id atau @student.umpku.ac.id</p>
+            <p class="text-[11px] text-parchment-500 mt-1">Gunakan format @students.itspku.ac.id atau @student.umpku.ac.id</p>
           </div>
 
           <div>
@@ -86,7 +105,7 @@ definePageMeta({ layout: 'blank' })
 const auth = useAuthStore()
 const router = useRouter()
 
-const form = reactive({ name: '', email: '', password: '' })
+const form = reactive({ name: '', username: '', email: '', password: '' })
 const loading = ref(false)
 const errorMsg = ref('')
 
@@ -95,7 +114,7 @@ async function handleRegister() {
   errorMsg.value = ''
 
   try {
-    await auth.register(form.name, form.email, form.password)
+    await auth.register(form.name, form.username, form.email, form.password)
     router.push('/kirim')
   } catch (err: any) {
     if (err?.data?.errors) {

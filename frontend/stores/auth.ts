@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    async register(name: string, email: string, password: string) {
+    async register(name: string, username: string, email: string, password: string) {
       const config = useRuntimeConfig()
       const apiBase = config.public.apiBase as string
 
@@ -22,11 +22,11 @@ export const useAuthStore = defineStore('auth', {
         data: {
           token: string
           token_type: string
-          user: { id: number; name: string; email: string; role: string }
+          user: { id: number; name: string; username?: string; email: string; role: string }
         }
       }>(`${apiBase}/auth/register`, {
         method: 'POST',
-        body: { name, email, password },
+        body: { name, username, email, password },
         headers: { Accept: 'application/json' },
       })
 

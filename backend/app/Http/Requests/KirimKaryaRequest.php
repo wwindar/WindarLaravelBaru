@@ -36,7 +36,7 @@ class KirimKaryaRequest extends FormRequest
                 'max:255',
                 function ($attribute, $value, $fail) {
                     $domain = strtolower(substr(strrchr($value, '@'), 1));
-                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id', 'student.univ.ac.id'];
+                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id', 'itspku.ac.id', 'students.itspku.ac.id', 'student.univ.ac.id'];
                     
                     $isAllowed = false;
                     foreach ($allowedDomains as $allowed) {
@@ -47,7 +47,7 @@ class KirimKaryaRequest extends FormRequest
                     }
 
                     if (! $isAllowed) {
-                        $fail('Hanya mahasiswa civitas akademika UMPKU yang dapat mengirimkan naskah (gunakan email kampus @umpku.ac.id / @student.umpku.ac.id).');
+                        $fail('Hanya mahasiswa civitas akademika yang dapat mengirimkan naskah (gunakan email kampus resmi seperti @students.itspku.ac.id, @itspku.ac.id, @umpku.ac.id, atau @student.umpku.ac.id).');
                     }
                 },
             ],

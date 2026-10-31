@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Registrasi akun mahasiswa / penulis baru khusus civitas UMPKU.
+     * Registrasi akun mahasiswa / penulis baru khusus civitas UMPKU & ITS PKU.
      */
     public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:100'],
+            'username' => ['required', 'string', 'alpha_dash', 'min:3', 'max:30', 'unique:users,username'],
             'email'    => [
                 'required',
                 'email',
@@ -25,7 +26,7 @@ class AuthController extends Controller
                 'max:150',
                 function ($attribute, $value, $fail) {
                     $domain = strtolower(substr(strrchr($value, '@'), 1));
-                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id'];
+                    $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id', 'itspku.ac.id', 'students.itspku.ac.id'];
                     
                     $isAllowed = false;
                     foreach ($allowedDomains as $allowed) {
@@ -36,13 +37,17 @@ class AuthController extends Controller
                     }
 
                     if (! $isAllowed) {
-                        $fail('Pendaftaran naskah hanya dibuka untuk mahasiswa civitas akademika UMPKU (wajib menggunakan email kampus @umpku.ac.id atau @student.umpku.ac.id).');
+                        $fail('Pendaftaran naskah hanya dibuka untuk mahasiswa civitas akademika (wajib menggunakan email kampus resmi seperti @students.itspku.ac.id, @itspku.ac.id, @umpku.ac.id, atau @student.umpku.ac.id).');
                     }
                 },
             ],
             'password' => ['required', 'string', 'min:6'],
         ], [
             'name.required'     => 'Nama lengkap wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.alpha_dash' => 'Username hanya boleh huruf, angka, tanda strip, atau garis bawah.',
+            'username.min'      => 'Username minimal 3 karakter.',
+            'username.unique'   => 'Username ini sudah digunakan, silakan pilih yang lain.',
             'email.required'    => 'Email kampus wajib diisi.',
             'email.email'       => 'Format email tidak valid.',
             'email.unique'      => 'Email ini sudah terdaftar. Silakan langsung masuk.',
@@ -52,6 +57,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name'     => $validated['name'],
+            'username' => strtolower($validated['username']),
             'email'    => strtolower($validated['email']),
             'password' => Hash::make($validated['password']),
             'role'     => 'penulis',
@@ -60,15 +66,16 @@ class AuthController extends Controller
         $token = $user->createToken('aksara-kampus-user')->plainTextToken;
 
         return response()->json([
-            'message' => 'Pendaftaran berhasil. Selamat datang di Aksara Kampus UMPKU!',
+            'message' => 'Pendaftaran berhasil. Selamat datang di Aksara Kampus!',
             'data'    => [
                 'token'      => $token,
                 'token_type' => 'Bearer',
                 'user'       => [
-                    'id'    => $user->id,
-                    'name'  => $user->name,
-                    'email' => $user->email,
-                    'role'  => $user->role,
+                    'id'       => $user->id,
+                    'name'     => $user->name,
+                    'username' => $user->username,
+                    'email'    => $user->email,
+                    'role'     => $user->role,
                 ],
             ],
         ], 201);
@@ -99,10 +106,11 @@ class AuthController extends Controller
                 'token'      => $token,
                 'token_type' => 'Bearer',
                 'user'       => [
-                    'id'    => $user->id,
-                    'name'  => $user->name,
-                    'email' => $user->email,
-                    'role'  => $user->role,
+                    'id'       => $user->id,
+                    'name'     => $user->name,
+                    'username' => $user->username,
+                    'email'    => $user->email,
+                    'role'     => $user->role,
                 ],
             ],
         ]);
@@ -117,10 +125,11 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
+                'id'       => $user->id,
+                'name'     => $user->name,
+                'username' => $user->username,
+                'email'    => $user->email,
+                'role'     => $user->role,
             ],
         ]);
     }

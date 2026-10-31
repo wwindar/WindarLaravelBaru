@@ -43,6 +43,9 @@
             </div>
 
             <div class="flex items-center gap-2 text-xs">
+                <a href="{{ route('admin.login') }}" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-slate-950 font-bold transition shadow-md">
+                    🔐 Login Admin Backend
+                </a>
                 <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700/80 text-amber-200 font-mono">
                     Token: redaksi-rahasia-123
                 </span>

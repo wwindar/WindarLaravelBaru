@@ -39,9 +39,9 @@
           🎓
         </div>
         <div class="max-w-lg mx-auto space-y-2">
-          <h2 class="text-2xl font-bold text-white">Khusus Mahasiswa UMPKU</h2>
+          <h2 class="text-2xl font-bold text-white">Khusus Mahasiswa Kampus</h2>
           <p class="text-slate-400 text-sm leading-relaxed">
-            Pengiriman naskah karya sastra hanya dibuka untuk mahasiswa dan civitas akademika Universitas Muhammadiyah Kudus (<strong class="text-amber-400">UMPKU</strong>).
+            Pengiriman naskah karya sastra hanya dibuka untuk mahasiswa dan civitas akademika kampus resmi (<strong class="text-amber-400">@students.itspku.ac.id</strong> / <strong class="text-amber-400">@student.umpku.ac.id</strong>).
           </p>
           <p class="text-slate-500 text-xs">
             Pengunjung umum dipersilakan menikmati dan membaca karya-karya sastra yang telah terbit.
