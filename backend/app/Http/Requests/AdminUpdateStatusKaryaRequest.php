@@ -43,4 +43,3 @@ class AdminUpdateStatusKaryaRequest extends FormRequest
         );
     }
 }
-

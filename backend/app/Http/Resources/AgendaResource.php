@@ -29,4 +29,3 @@ class AgendaResource extends JsonResource
         ];
     }
 }
-

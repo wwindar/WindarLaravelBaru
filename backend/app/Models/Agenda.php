@@ -55,4 +55,3 @@ class Agenda extends Model
         return $slug;
     }
 }
-

@@ -60,4 +60,3 @@ class Artikel extends Model
         return $slug;
     }
 }
-

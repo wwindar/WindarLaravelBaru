@@ -64,4 +64,3 @@ class KaryaController extends Controller
         return new KaryaResource($karya);
     }
 }
-

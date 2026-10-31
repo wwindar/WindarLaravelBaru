@@ -78,4 +78,3 @@ class AgendaController extends Controller
         return new AgendaResource($agenda);
     }
 }
-

@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -18,8 +19,6 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -30,11 +29,37 @@ class User extends Authenticatable
         ];
     }
 
+    /** Tulisan milik user ini. */
+    public function tulisan(): HasMany
+    {
+        return $this->hasMany(Tulisan::class);
+    }
+
+    /** Notifikasi in-app milik user ini. */
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class);
+    }
+
+    /** Apakah user berstatus dosen/editor? */
+    public function isDosen(): bool
+    {
+        return $this->role === 'dosen';
+    }
+
+    /** Apakah user berstatus mahasiswa/penulis? */
+    public function isMahasiswa(): bool
+    {
+        return $this->role === 'mahasiswa';
+    }
+
     /**
-     * Check if the user is an administrator.
+     * Alias lama — dipertahankan agar kode lama tidak error.
+     *
+     * @deprecated Gunakan isDosen() atau isMahasiswa().
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->isDosen();
     }
 }

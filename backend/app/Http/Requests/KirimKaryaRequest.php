@@ -37,10 +37,10 @@ class KirimKaryaRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $domain = strtolower(substr(strrchr($value, '@'), 1));
                     $allowedDomains = ['umpku.ac.id', 'student.umpku.ac.id', 'itspku.ac.id', 'students.itspku.ac.id', 'student.univ.ac.id'];
-                    
+
                     $isAllowed = false;
                     foreach ($allowedDomains as $allowed) {
-                        if ($domain === $allowed || str_ends_with($domain, '.' . $allowed)) {
+                        if ($domain === $allowed || str_ends_with($domain, '.'.$allowed)) {
                             $isAllowed = true;
                             break;
                         }

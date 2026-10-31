@@ -143,4 +143,3 @@ class AdminKaryaController extends Controller
         ], 200);
     }
 }
-

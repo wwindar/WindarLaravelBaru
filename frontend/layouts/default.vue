@@ -1,66 +1,123 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-ink-950 text-parchment-200">
-    <!-- Navbar -->
-    <header class="sticky top-0 z-50 border-b border-ink-800/80 bg-ink-950/85 backdrop-blur-md">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        <!-- Logo -->
-        <NuxtLink to="/" class="flex items-center gap-3 group">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-ochre-400 to-terracotta-500 flex items-center justify-center font-bold text-ink-950 text-base shadow-lg shadow-ochre-400/20 group-hover:scale-105 transition transform">
+  <div class="min-h-screen flex flex-col bg-canvas text-ink font-sans">
+    <!-- Navbar Top -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-card-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <!-- Brand / Logo -->
+        <NuxtLink to="/" class="flex items-center gap-3 group focus-visible:rounded-xl">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-brand flex items-center justify-center font-heading font-bold text-white text-base shadow-sm group-hover:scale-105 transition transform">
             AK
           </div>
           <div>
-            <span class="font-bold text-parchment-50 text-base tracking-tight block">Aksara Kampus</span>
-            <span class="text-[10px] text-ochre-400/80 font-mono tracking-wider -mt-0.5 block">UMPKU</span>
+            <span class="font-heading font-bold text-base text-ink tracking-tight block leading-tight">Aksara Kampus</span>
+            <span class="text-[11px] text-ink-muted block leading-tight font-medium">Portal Sastra & Artikel</span>
           </div>
         </NuxtLink>
 
-        <!-- Nav links -->
-        <nav class="hidden md:flex items-center gap-1">
-          <NuxtLink to="/" class="nav-link" exact-active-class="nav-link-active">Beranda</NuxtLink>
-          <NuxtLink to="/artikel" class="nav-link" active-class="nav-link-active">Artikel</NuxtLink>
-          <NuxtLink to="/karya" class="nav-link" active-class="nav-link-active">Karya Sastra</NuxtLink>
-          <NuxtLink to="/agenda" class="nav-link" active-class="nav-link-active">Agenda</NuxtLink>
-          <NuxtLink to="/kirim" class="nav-link" active-class="nav-link-active">Kirim Karya</NuxtLink>
+        <!-- Navigation Links (Desktop) -->
+        <nav class="hidden md:flex items-center gap-1.5" aria-label="Menu Utama">
+          <NuxtLink to="/" class="nav-item" exact-active-class="nav-item-active">Beranda</NuxtLink>
+          <NuxtLink to="/karya" class="nav-item" active-class="nav-item-active">Karya Sastra</NuxtLink>
+          <NuxtLink to="/agenda" class="nav-item" active-class="nav-item-active">Agenda Kegiatan</NuxtLink>
         </nav>
 
-        <!-- Auth buttons -->
-        <div class="flex items-center gap-2">
-          <template v-if="auth.isLoggedIn">
-            <span class="text-xs text-ochre-300 font-semibold hidden sm:inline">
-              Halo, {{ auth.user?.name?.split(' ')[0] }}
-            </span>
-            <button @click="auth.logout()" class="btn-ghost text-xs px-3 py-1.5 text-terracotta-400 hover:text-terracotta-300">
+        <!-- Right Side: User State & Action Buttons -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- State: Logged In Mahasiswa -->
+          <template v-if="auth.isLoggedIn && auth.isMahasiswa">
+            <NotificationBell />
+            <NuxtLink to="/mahasiswa" class="nav-item font-semibold text-xs" active-class="nav-item-active">
+              Tulisan Saya
+            </NuxtLink>
+            <NuxtLink to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-3.5 py-2 hidden sm:inline-flex">
+              + Tulis Karya
+            </NuxtLink>
+            <button
+              type="button"
+              @click="auth.logout"
+              class="btn-ghost text-xs px-2.5 py-2 text-rose-600 hover:text-rose-700"
+              title="Keluar akun"
+            >
               Keluar
             </button>
-            <NuxtLink v-if="auth.isAdmin" to="/admin" class="btn-primary text-xs px-3 py-1.5">
-              Panel Redaksi
-            </NuxtLink>
           </template>
+
+          <!-- State: Logged In Dosen / Editor -->
+          <template v-else-if="auth.isLoggedIn && auth.isDosen">
+            <span class="text-xs px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 font-bold border border-purple-200 hidden sm:inline">
+              Dosen / Editor
+            </span>
+            <NuxtLink to="/dosen" class="nav-item font-semibold text-xs" active-class="nav-item-active">
+              Antrean Naskah
+            </NuxtLink>
+            <NuxtLink to="/dosen/laporan" class="nav-item font-semibold text-xs" active-class="nav-item-active">
+              Laporan
+            </NuxtLink>
+            <button
+              type="button"
+              @click="auth.logout"
+              class="btn-ghost text-xs px-2.5 py-2 text-rose-600 hover:text-rose-700"
+              title="Keluar akun"
+            >
+              Keluar
+            </button>
+          </template>
+
+          <!-- State: Guest / Belum Login -->
           <template v-else>
-            <NuxtLink to="/login" class="btn-ghost text-xs px-3 py-1.5">
+            <NuxtLink to="/login" class="btn-secondary text-xs px-3.5 py-2">
               Masuk
             </NuxtLink>
-            <NuxtLink to="/register" class="btn-primary text-xs px-3 py-1.5">
-              Gabung Mahasiswa
+            <NuxtLink to="/register" class="btn-primary text-xs px-3.5 py-2">
+              Daftar Mahasiswa
             </NuxtLink>
           </template>
         </div>
       </div>
     </header>
 
-    <!-- Page content -->
+    <!-- Content Slot -->
     <main class="flex-1">
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-ink-800/80 bg-ink-900/40 py-8 mt-16">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-parchment-500">
-        <span class="flex items-center gap-2">
-          <span class="w-5 h-5 rounded-md bg-gradient-to-tr from-ochre-400 to-terracotta-500 inline-flex items-center justify-center text-ink-950 font-bold text-[10px]">AK</span>
-          © {{ new Date().getFullYear() }} Aksara Kampus • Universitas Muhammadiyah Kudus
-        </span>
-        <span class="text-sage-300/80">Ruang Dialektika & Komunitas Sastra Kampus</span>
+    <footer class="bg-white border-t border-card-border py-12 mt-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-card-border">
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-8 h-8 rounded-xl bg-indigo-brand text-white flex items-center justify-center font-heading font-bold text-sm">
+                AK
+              </div>
+              <span class="font-heading font-bold text-base text-ink">Aksara Kampus</span>
+            </div>
+            <p class="text-xs text-ink-muted leading-relaxed max-w-sm">
+              Wadah apresiasi dan publikasi sastra digital untuk civitas akademika kampus. Menghidupkan tradisi literasi melalui puisi, cerpen, artikel kritis, dan esai.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Kanal Sastra</h4>
+            <ul class="space-y-2 text-xs text-ink-muted">
+              <li><NuxtLink to="/karya?jenis=puisi" class="hover:text-indigo-brand transition">Puisi Kampus</NuxtLink></li>
+              <li><NuxtLink to="/karya?jenis=cerpen" class="hover:text-indigo-brand transition">Cerita Pendek</NuxtLink></li>
+              <li><NuxtLink to="/karya?jenis=esai" class="hover:text-indigo-brand transition">Esai & Kritik</NuxtLink></li>
+              <li><NuxtLink to="/karya?jenis=artikel" class="hover:text-indigo-brand transition">Artikel Ilmiah Populer</NuxtLink></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Peran & Akses</h4>
+            <ul class="space-y-2 text-xs text-ink-muted">
+              <li><NuxtLink to="/register" class="hover:text-indigo-brand transition">Gabung Penulis Mahasiswa</NuxtLink></li>
+              <li><NuxtLink to="/login" class="hover:text-indigo-brand transition">Login Dosen & Mahasiswa</NuxtLink></li>
+              <li><NuxtLink to="/agenda" class="hover:text-indigo-brand transition">Agenda & Sayembara</NuxtLink></li>
+            </ul>
+          </div>
+        </div>
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-subtle">
+          <span>© {{ new Date().getFullYear() }} Aksara Kampus • Portal Komunitas Sastra</span>
+          <span>Desain Terang & Lembut • InfinityFree Ready</span>
+        </div>
       </div>
     </footer>
   </div>
@@ -71,10 +128,10 @@ const auth = useAuthStore()
 </script>
 
 <style scoped>
-.nav-link {
-  @apply px-3 py-1.5 rounded-xl text-sm text-parchment-400 hover:text-parchment-100 hover:bg-ink-850 transition-colors;
+.nav-item {
+  @apply px-3.5 py-2 rounded-xl text-xs font-medium text-ink-muted hover:text-ink hover:bg-indigo-soft/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-brand;
 }
-.nav-link-active {
-  @apply text-ochre-400 bg-ochre-400/10 font-semibold;
+.nav-item-active {
+  @apply text-indigo-brand bg-indigo-soft font-semibold;
 }
 </style>

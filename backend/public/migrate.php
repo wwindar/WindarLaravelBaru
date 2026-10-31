@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Artisan;
+
 /**
  * ⚠️  FILE INI UNTUK SEKALI PAKAI SAJA — HAPUS SEGERA SETELAH MIGRATION BERHASIL!
  *
@@ -30,14 +33,14 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$kernel = $app->make(Kernel::class);
 
 // Jalankan migration
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 try {
-    Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-    $output = Illuminate\Support\Facades\Artisan::output();
+    Artisan::call('migrate', ['--force' => true]);
+    $output = Artisan::output();
 
     echo '<pre style="font-family:monospace;background:#1a1a2e;color:#e2e2e2;padding:20px;border-radius:8px;">';
     echo "✅ Migration selesai!\n\n";
@@ -51,4 +54,3 @@ try {
     echo htmlspecialchars($e->getMessage());
     echo '</pre>';
 }
-

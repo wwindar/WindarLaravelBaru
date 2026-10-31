@@ -51,4 +51,3 @@ class AdminStoreAgendaRequest extends FormRequest
         );
     }
 }
-

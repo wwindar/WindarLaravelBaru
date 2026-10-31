@@ -50,4 +50,3 @@ class AdminUpdateArtikelRequest extends FormRequest
         );
     }
 }
-

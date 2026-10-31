@@ -46,4 +46,3 @@ class AdminUpdateAgendaRequest extends FormRequest
         );
     }
 }
-

@@ -50,7 +50,7 @@
                     Token: redaksi-rahasia-123
                 </span>
                 <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700/80 text-slate-300 font-mono">
-                    Port: 8001
+                    Host: 127.0.0.1:8000
                 </span>
             </div>
         </div>

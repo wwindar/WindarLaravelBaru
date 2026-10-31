@@ -11,69 +11,43 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        heading: ['"Sora"', 'system-ui', 'sans-serif'],
       },
       colors: {
-        parchment: {
-          50:  '#fdfaf6',
-          100: '#fbf4eb',
-          200: '#f6e9d8',
-          300: '#FFEAD3', // Warna 1: Cream/Parchment
-          400: '#edd0b2',
-          500: '#d9b18c',
-          600: '#b88d67',
-          700: '#8e6948',
-          800: '#5c422c',
-          900: '#382618',
-        },
-        sage: {
-          50:  '#f3fafb',
-          100: '#e5f6f7',
-          200: '#d0eff2',
-          300: '#BFE7EA', // Warna 2: Soft Mint / Mist
-          400: '#95d2d7',
-          500: '#67b3ba',
-          600: '#488e95',
-          700: '#376f75',
-          800: '#2b5459',
-          900: '#1d3b3f',
-        },
-        ochre: {
-          50:  '#fef8ee',
-          100: '#fdf0db',
-          200: '#f9deaf',
-          300: '#f4c680',
-          400: '#E89B5B', // Warna 3: Warm Ochre
-          500: '#d8833e',
-          600: '#bd672e',
-          700: '#974c25',
-          800: '#753920',
-          900: '#562a19',
-        },
-        terracotta: {
-          50:  '#fdf4f0',
-          100: '#fae6dd',
-          200: '#f4cebc',
-          300: '#eab095',
-          400: '#df8768',
-          500: '#D46743', // Warna 4: Deep Rust / Terracotta
-          600: '#b84e2c',
-          700: '#943c22',
-          800: '#73311e',
-          900: '#552417',
-        },
+        canvas: '#F7F7FB',
         ink: {
-          50:  '#f8f9fa',
-          100: '#f1f3f5',
-          200: '#e9ecef',
-          700: '#382f2c',
-          800: '#2c2523',
-          850: '#221c1a',
-          900: '#1a1514', // Warm Charcoal / Deep Ink
-          950: '#120e0d', // Canvas dark background
+          DEFAULT: '#16162B',
+          muted: '#63627A',
+          subtle: '#9190A5',
+          light: '#D3D3E0',
         },
+        indigo: {
+          brand: '#5646E0',
+          hover: '#4535C8',
+          dark: '#1E1650',
+          soft: '#EEECFC',
+          light: '#F4F3FD',
+        },
+        card: {
+          DEFAULT: '#FFFFFF',
+          border: '#E3E3EE',
+        },
+        status: {
+          draf: '#6B7280',
+          menunggu: '#D97706',
+          terbit: '#059669',
+          revisi: '#D946EF',
+          ditolak: '#DC2626',
+        },
+      },
+      borderRadius: {
+        '2xl': '16px',
+      },
+      boxShadow: {
+        subtle: '0 2px 8px -2px rgba(22, 22, 43, 0.05), 0 4px 16px -4px rgba(22, 22, 43, 0.08)',
+        card: '0 1px 3px 0 rgba(22, 22, 43, 0.04), 0 6px 20px -4px rgba(86, 70, 224, 0.06)',
+        lift: '0 12px 28px -6px rgba(86, 70, 224, 0.12), 0 4px 12px -2px rgba(22, 22, 43, 0.04)',
       },
     },
   },

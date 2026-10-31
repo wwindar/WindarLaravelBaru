@@ -39,4 +39,3 @@ class AdminStoreKategoriRequest extends FormRequest
         );
     }
 }
-

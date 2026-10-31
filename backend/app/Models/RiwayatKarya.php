@@ -43,4 +43,3 @@ class RiwayatKarya extends Model
             : (StatusKarya::tryFrom((string) $this->status)?->label() ?? (string) $this->status);
     }
 }
-

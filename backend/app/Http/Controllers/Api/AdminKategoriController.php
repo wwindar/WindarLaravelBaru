@@ -108,4 +108,3 @@ class AdminKategoriController extends Controller
         ], 200);
     }
 }
-

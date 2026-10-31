@@ -75,4 +75,3 @@ class ArtikelController extends Controller
         return new ArtikelResource($artikel);
     }
 }
-

@@ -120,4 +120,3 @@ class AdminAgendaController extends Controller
         ], 200);
     }
 }
-

@@ -33,4 +33,3 @@ class KaryaResource extends JsonResource
         ];
     }
 }
-

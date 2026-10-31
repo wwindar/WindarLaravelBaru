@@ -9,14 +9,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class KategoriController extends Controller
 {
-    /**
-     * Display a listing of categories.
-     */
+    /** Daftar semua kategori. */
     public function index(): AnonymousResourceCollection
     {
-        $kategori = Kategori::orderBy('nama', 'asc')->get();
-
-        return KategoriResource::collection($kategori);
+        return KategoriResource::collection(Kategori::orderBy('nama')->get());
     }
 }
-

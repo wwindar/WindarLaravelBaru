@@ -1,116 +1,138 @@
 /**
- * Store autentikasi — menyimpan token Sanctum & data user admin
+ * Store autentikasi — menggunakan Nuxt Cookie (bukan localStorage)
+ * Mendukung peran: 'mahasiswa', 'dosen'
  */
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    token: null as string | null,
-    user: null as { id: number; name: string; email: string; role: string } | null,
-  }),
+export interface AuthUser {
+  id: number
+  name: string
+  username?: string
+  email: string
+  role: 'mahasiswa' | 'dosen' | string
+}
 
-  getters: {
-    isLoggedIn: (state) => !!state.token,
-    isAdmin: (state) => state.user?.role === 'admin',
-  },
+export const useAuthStore = defineStore('auth', () => {
+  const tokenCookie = useCookie<string | null>('ak_token', {
+    default: () => null,
+    maxAge: 60 * 60 * 24 * 7, // 7 hari
+    sameSite: 'lax',
+    secure: false, // sesuaikan false untuk localhost & shared hosting http
+  })
 
-  actions: {
-    async register(name: string, username: string, email: string, password: string) {
-      const config = useRuntimeConfig()
-      const apiBase = config.public.apiBase as string
+  const userCookie = useCookie<AuthUser | null>('ak_user', {
+    default: () => null,
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: 'lax',
+    secure: false,
+  })
 
-      const res = await $fetch<{
-        message: string
-        data: {
-          token: string
-          token_type: string
-          user: { id: number; name: string; username?: string; email: string; role: string }
-        }
-      }>(`${apiBase}/auth/register`, {
-        method: 'POST',
-        body: { name, username, email, password },
-        headers: { Accept: 'application/json' },
+  const token = ref<string | null>(tokenCookie.value)
+  const user = ref<AuthUser | null>(userCookie.value)
+
+  const isLoggedIn = computed(() => !!token.value)
+  const isMahasiswa = computed(() => user.value?.role === 'mahasiswa')
+  const isDosen = computed(() => user.value?.role === 'dosen')
+
+  // Sinkronkan state dengan cookie
+  watch(token, (val) => {
+    tokenCookie.value = val
+  })
+  watch(user, (val) => {
+    userCookie.value = val
+  })
+
+  const config = useRuntimeConfig()
+  const apiBase = config.public.apiBase as string
+
+  async function register(name: string, username: string, email: string, password: string) {
+    const res = await $fetch<{
+      message: string
+      data: {
+        token: string
+        token_type: string
+        user: AuthUser
+      }
+    }>(`${apiBase}/auth/register`, {
+      method: 'POST',
+      body: { name, username, email, password },
+      headers: { Accept: 'application/json' },
+    })
+
+    token.value = res.data.token
+    user.value = res.data.user
+    tokenCookie.value = res.data.token
+    userCookie.value = res.data.user
+
+    return res
+  }
+
+  async function login(email: string, password: string) {
+    const res = await $fetch<{
+      message: string
+      data: {
+        token: string
+        token_type: string
+        user: AuthUser
+      }
+    }>(`${apiBase}/auth/login`, {
+      method: 'POST',
+      body: { email, password },
+      headers: { Accept: 'application/json' },
+    })
+
+    token.value = res.data.token
+    user.value = res.data.user
+    tokenCookie.value = res.data.token
+    userCookie.value = res.data.user
+
+    return res
+  }
+
+  async function fetchMe() {
+    if (!token.value) return null
+    try {
+      const res = await $fetch<{ data: AuthUser }>(`${apiBase}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          Accept: 'application/json',
+        },
       })
+      user.value = res.data
+      userCookie.value = res.data
+      return res.data
+    } catch {
+      logout()
+      return null
+    }
+  }
 
-      this.token = res.data.token
-      this.user  = res.data.user
-
-      if (import.meta.client) {
-        localStorage.setItem('ak_token', this.token)
-        localStorage.setItem('ak_user', JSON.stringify(this.user))
-      }
-
-      return res
-    },
-
-    async login(email: string, password: string) {
-      const config = useRuntimeConfig()
-      const apiBase = config.public.apiBase as string
-
-      const res = await $fetch<{
-        message: string
-        data: {
-          token: string
-          token_type: string
-          user: { id: number; name: string; email: string; role: string }
-        }
-      }>(`${apiBase}/auth/login`, {
+  function logout() {
+    if (token.value) {
+      $fetch(`${apiBase}/auth/logout`, {
         method: 'POST',
-        body: { email, password },
-        headers: { Accept: 'application/json' },
-      })
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          Accept: 'application/json',
+        },
+      }).catch(() => {})
+    }
 
-      this.token = res.data.token
-      this.user  = res.data.user
+    token.value = null
+    user.value = null
+    tokenCookie.value = null
+    userCookie.value = null
 
-      // Simpan ke localStorage supaya tidak logout saat refresh
-      if (import.meta.client) {
-        localStorage.setItem('ak_token', this.token)
-        localStorage.setItem('ak_user', JSON.stringify(this.user))
-      }
+    navigateTo('/login')
+  }
 
-      return res
-    },
-
-    logout() {
-      // Panggil API logout (fire-and-forget)
-      if (this.token) {
-        const config = useRuntimeConfig()
-        $fetch(`${config.public.apiBase}/auth/logout`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-            Accept: 'application/json',
-          },
-        }).catch(() => {})
-      }
-
-      this.token = null
-      this.user  = null
-
-      if (import.meta.client) {
-        localStorage.removeItem('ak_token')
-        localStorage.removeItem('ak_user')
-      }
-
-      navigateTo('/admin/login')
-    },
-
-    /** Restore sesi dari localStorage saat app dimuat */
-    restoreSession() {
-      if (!import.meta.client) return
-
-      const savedToken = localStorage.getItem('ak_token')
-      const savedUser  = localStorage.getItem('ak_user')
-
-      if (savedToken && savedUser) {
-        this.token = savedToken
-        try {
-          this.user = JSON.parse(savedUser)
-        } catch {
-          this.token = null
-          this.user  = null
-        }
-      }
-    },
-  },
+  return {
+    token,
+    user,
+    isLoggedIn,
+    isMahasiswa,
+    isDosen,
+    register,
+    login,
+    logout,
+    fetchMe,
+  }
 })
-

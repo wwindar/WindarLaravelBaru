@@ -26,4 +26,3 @@ enum StatusKarya: string
         return in_array($this, [self::TERBIT, self::DITOLAK], true);
     }
 }
-

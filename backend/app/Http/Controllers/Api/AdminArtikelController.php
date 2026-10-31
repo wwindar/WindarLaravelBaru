@@ -132,4 +132,3 @@ class AdminArtikelController extends Controller
         ], 200);
     }
 }
-

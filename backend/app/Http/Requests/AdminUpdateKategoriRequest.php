@@ -39,4 +39,3 @@ class AdminUpdateKategoriRequest extends FormRequest
         );
     }
 }
-

@@ -38,4 +38,3 @@ class ArtikelResource extends JsonResource
         ];
     }
 }
-

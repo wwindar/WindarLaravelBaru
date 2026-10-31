@@ -4,34 +4,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Gantikan tabel karya lama dengan riwayat_status_tulisan.
+ */
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('karya', function (Blueprint $table) {
+        Schema::dropIfExists('karya');
+
+        Schema::create('riwayat_status_tulisan', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
-            $table->string('nomor_kiriman')->nullable()->unique();
-            $table->string('judul');
-            $table->enum('jenis', ['puisi', 'cerpen', 'esai']);
-            $table->longText('isi');
-            $table->string('nama_penulis');
-            $table->string('email');
-            $table->string('status', 30)->default('dikirim');
-            $table->text('catatan_redaksi')->nullable();
+            $table->foreignId('tulisan_id')->constrained('tulisan')->cascadeOnDelete();
+            $table->string('status', 30);
+            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('karya');
+        Schema::dropIfExists('riwayat_status_tulisan');
     }
 };
-

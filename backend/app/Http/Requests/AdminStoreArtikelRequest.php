@@ -54,4 +54,3 @@ class AdminStoreArtikelRequest extends FormRequest
         );
     }
 }
-
