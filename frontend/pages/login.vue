@@ -1,15 +1,16 @@
 <template>
   <div class="min-h-[calc(100vh-4rem)] flex items-stretch">
-    <!-- Panel Kiri: Indigo Gelap #1E1650 (Desktop) -->
-    <div class="hidden lg:flex lg:w-1/2 bg-[#1E1650] text-white p-12 lg:p-16 flex-col justify-between relative overflow-hidden">
-      <!-- Background subtle pattern -->
-      <div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-indigo-brand/20 blur-3xl pointer-events-none"></div>
-      <div class="absolute -left-12 -top-12 w-80 h-80 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
+    <!-- Panel Kiri: Slate-Violet Gradient (uTask Dark Aesthetic) -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#231A3B] via-[#1B162E] to-[#120F20] text-white p-12 lg:p-16 flex-col justify-between relative overflow-hidden border-r border-[#352E54]/50">
+      <!-- Background subtle ambient glow -->
+      <div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-fuchsia-600/20 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -top-12 w-80 h-80 rounded-full bg-pink-500/15 blur-2xl pointer-events-none"></div>
+      <div class="absolute right-1/4 top-1/3 w-64 h-64 rounded-full bg-purple-600/15 blur-3xl pointer-events-none"></div>
 
       <!-- Header kiri -->
       <div class="relative z-10">
         <NuxtLink to="/" class="inline-flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-indigo-brand text-white flex items-center justify-center font-heading font-bold text-base shadow">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white flex items-center justify-center font-heading font-bold text-base shadow-lg shadow-fuchsia-900/30">
             AK
           </div>
           <span class="font-heading font-bold text-xl text-white tracking-tight">Aksara Kampus</span>
@@ -18,47 +19,50 @@
 
       <!-- Kutipan sastra / info peran -->
       <div class="relative z-10 space-y-6 max-w-md my-auto py-12">
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-indigo-200 border border-white/15">
+        <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-pink-200 border border-white/15 backdrop-blur-sm">
           Portal Mahasiswa & Dosen Editor
         </span>
         <h2 class="font-heading text-3xl xl:text-4xl font-extrabold text-white leading-tight">
           Satu Pintu Masuk untuk Berkarya dan Mengurasi.
         </h2>
-        <p class="text-sm text-indigo-200/80 leading-relaxed">
+        <p class="text-sm text-fuchsia-100/80 leading-relaxed">
           Mahasiswa dapat mengelola draf tulisan dan mengajukan publikasi. Dosen dan dewan redaksi dapat langsung memeriksa antrean telaah karya.
         </p>
 
         <!-- Akun contoh panduan cepat -->
-        <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-xs space-y-2">
-          <p class="font-semibold text-white">Akun Contoh Pengujian (Password: password)</p>
-          <div class="grid grid-cols-2 gap-2 text-indigo-200/90 text-[11px]">
-            <div>
-              <span class="block text-indigo-300 font-bold">Mahasiswa:</span>
-              <span>andi@students.itspku.ac.id</span>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs space-y-2.5 backdrop-blur-sm">
+          <p class="font-semibold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Akun Contoh Pengujian (Password: password)
+          </p>
+          <div class="grid grid-cols-2 gap-2.5 text-fuchsia-100/90 text-[11px] pt-1">
+            <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+              <span class="block text-pink-300 font-bold mb-0.5">Mahasiswa:</span>
+              <span class="break-all font-mono text-[10px]">andi@students.itspku.ac.id</span>
             </div>
-            <div>
-              <span class="block text-indigo-300 font-bold">Dosen Editor:</span>
-              <span>dosen@umpku.ac.id</span>
+            <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+              <span class="block text-purple-300 font-bold mb-0.5">Dosen Editor:</span>
+              <span class="break-all font-mono text-[10px]">dosen@umpku.ac.id</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Footer kiri -->
-      <div class="relative z-10 text-xs text-indigo-300/60">
+      <div class="relative z-10 text-xs text-fuchsia-200/50">
         © {{ new Date().getFullYear() }} Aksara Kampus • Sistem Terintegrasi Sastra Digital
       </div>
     </div>
 
-    <!-- Panel Kanan: Formulir Login Terang & Lembut -->
+    <!-- Panel Kanan: Formulir Login -->
     <div class="w-full lg:w-1/2 bg-canvas flex items-center justify-center p-6 sm:p-12 lg:p-16">
-      <div class="card w-full max-w-md p-8 sm:p-10 shadow-lift">
+      <div class="card w-full max-w-md p-8 sm:p-10 shadow-lift border border-card-border">
         <!-- Logo mobile -->
-        <div class="lg:hidden flex items-center gap-2 mb-6">
-          <div class="w-8 h-8 rounded-xl bg-indigo-brand text-white flex items-center justify-center font-heading font-bold text-xs">
+        <div class="lg:hidden flex items-center gap-2.5 mb-6">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white flex items-center justify-center font-heading font-bold text-sm shadow">
             AK
           </div>
-          <span class="font-heading font-bold text-sm text-ink">Aksara Kampus</span>
+          <span class="font-heading font-bold text-base text-ink">Aksara Kampus</span>
         </div>
 
         <div class="mb-6">

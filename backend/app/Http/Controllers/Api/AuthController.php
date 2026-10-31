@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -33,13 +34,7 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                ],
+                'user' => $this->formatUser($user),
             ],
         ], 201);
     }
@@ -76,13 +71,7 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                ],
+                'user' => $this->formatUser($user),
             ],
         ]);
     }
@@ -92,16 +81,78 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
+        return response()->json([
+            'data' => $this->formatUser($request->user()),
+        ]);
+    }
+
+    /**
+     * Update profil user yang sedang login.
+     */
+    public function updateProfil(Request $request): JsonResponse
+    {
         $user = $request->user();
 
+        $validated = $request->validate([
+            'name'     => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username,' . $user->id],
+            'bio'      => ['nullable', 'string', 'max:500'],
+            'angkatan' => ['nullable', 'string', 'max:10', 'regex:/^\d{4}$/'],
+        ], [
+            'name.required'     => 'Nama lengkap wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, tanda hubung, dan garis bawah.',
+            'username.unique'   => 'Username sudah dipakai pengguna lain.',
+            'bio.max'           => 'Bio tidak boleh lebih dari 500 karakter.',
+            'angkatan.regex'    => 'Angkatan harus berupa tahun 4 digit (cth: 2023).',
+        ]);
+
+        $user->update([
+            'name'     => $validated['name'],
+            'username' => strtolower($validated['username']),
+            'bio'      => $validated['bio'] ?? null,
+            'angkatan' => $validated['angkatan'] ?? null,
+        ]);
+
         return response()->json([
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'username' => $user->username,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
+            'message' => 'Profil berhasil diperbarui.',
+            'data'    => $this->formatUser($user->fresh()),
+        ]);
+    }
+
+    /**
+     * Ganti kata sandi user yang sedang login.
+     */
+    public function gantiPassword(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'password_lama'  => ['required', 'string'],
+            'password_baru'  => ['required', 'string', 'min:8', 'confirmed', Password::min(8)],
+        ], [
+            'password_lama.required'  => 'Kata sandi lama wajib diisi.',
+            'password_baru.required'  => 'Kata sandi baru wajib diisi.',
+            'password_baru.min'       => 'Kata sandi baru minimal 8 karakter.',
+            'password_baru.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        if (! Hash::check($request->password_lama, $user->password)) {
+            return response()->json([
+                'message'  => 'Kata sandi lama tidak sesuai.',
+                'errors'   => ['password_lama' => ['Kata sandi lama tidak sesuai.']],
+            ], 422);
+        }
+
+        $user->update(['password' => Hash::make($request->password_baru)]);
+
+        // Hapus semua token lama, paksa login ulang
+        $user->tokens()->delete();
+        $newToken = $user->createToken('aksara-kampus')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Kata sandi berhasil diubah. Silakan masuk kembali dengan kata sandi baru.',
+            'data'    => ['token' => $newToken],
         ]);
     }
 
@@ -116,4 +167,21 @@ class AuthController extends Controller
             'message' => 'Logout berhasil.',
         ]);
     }
+
+    /**
+     * Helper — format data user ke array yang konsisten.
+     */
+    private function formatUser(User $user): array
+    {
+        return [
+            'id'       => $user->id,
+            'name'     => $user->name,
+            'username' => $user->username,
+            'email'    => $user->email,
+            'role'     => $user->role,
+            'bio'      => $user->bio,
+            'angkatan' => $user->angkatan,
+        ];
+    }
 }
+

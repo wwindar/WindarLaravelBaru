@@ -23,7 +23,7 @@
     <!-- Dropdown Popover -->
     <div
       v-if="isOpen"
-      class="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-card-border rounded-2xl shadow-lift z-50 overflow-hidden"
+      class="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-card-border rounded-2xl shadow-lift z-50 overflow-hidden"
     >
       <div class="p-4 border-b border-card-border flex items-center justify-between bg-canvas/50">
         <div class="flex items-center gap-2">

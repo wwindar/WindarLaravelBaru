@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-canvas text-ink font-sans">
+  <div class="min-h-screen flex flex-col bg-canvas text-ink font-sans transition-colors duration-200">
     <!-- Navbar Top -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-card-border">
+    <header class="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-card-border shadow-sm">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <!-- Brand / Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group focus-visible:rounded-xl">
-          <div class="w-10 h-10 rounded-2xl bg-indigo-brand flex items-center justify-center font-heading font-bold text-white text-base shadow-sm group-hover:scale-105 transition transform">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] flex items-center justify-center font-heading font-bold text-white text-base shadow-md group-hover:scale-105 transition transform">
             AK
           </div>
           <div>
@@ -22,8 +22,26 @@
           <NuxtLink to="/agenda" class="nav-item" active-class="nav-item-active">Agenda Kegiatan</NuxtLink>
         </nav>
 
-        <!-- Right Side: User State & Action Buttons -->
+        <!-- Right Side: User State, Theme Toggle & Action Buttons -->
         <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Theme Toggle Button (Light / Dark) -->
+          <button
+            type="button"
+            @click="toggleTheme"
+            class="w-9 h-9 rounded-xl flex items-center justify-center text-ink-muted hover:text-ink hover:bg-indigo-soft/60 border border-card-border transition"
+            :title="isDark ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap'"
+            aria-label="Toggle tema gelap atau terang"
+          >
+            <!-- Sun icon when dark -->
+            <svg v-if="isDark" class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <!-- Moon icon when light -->
+            <svg v-else class="w-4 h-4 text-ink-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+
           <!-- State: Logged In Mahasiswa -->
           <template v-if="auth.isLoggedIn && auth.isMahasiswa">
             <NotificationBell />
@@ -33,14 +51,64 @@
             <NuxtLink to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-3.5 py-2 hidden sm:inline-flex">
               + Tulis Karya
             </NuxtLink>
-            <button
-              type="button"
-              @click="auth.logout"
-              class="btn-ghost text-xs px-2.5 py-2 text-rose-600 hover:text-rose-700"
-              title="Keluar akun"
-            >
-              Keluar
-            </button>
+            <!-- Dropdown Profil Mahasiswa -->
+            <div class="relative" ref="profilDropdown">
+              <button
+                type="button"
+                @click="showProfilMenu = !showProfilMenu"
+                class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition"
+                :style="{ background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' }"
+                :title="auth.user?.name"
+                aria-haspopup="true"
+                :aria-expanded="showProfilMenu"
+              >
+                {{ navInitials }}
+              </button>
+              <!-- Dropdown menu -->
+              <div
+                v-if="showProfilMenu"
+                class="absolute right-0 mt-2 w-52 bg-card border border-card-border rounded-2xl shadow-lift z-50 overflow-hidden"
+              >
+                <div class="px-4 py-3 border-b border-card-border">
+                  <p class="text-xs font-bold text-ink truncate">{{ auth.user?.name }}</p>
+                  <p class="text-[11px] text-ink-muted truncate">@{{ auth.user?.username }}</p>
+                </div>
+                <div class="py-1">
+                  <NuxtLink
+                    to="/mahasiswa/profil"
+                    class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-ink hover:bg-indigo-soft/50 transition"
+                    @click="showProfilMenu = false"
+                  >
+                    <svg class="w-4 h-4 text-ink-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Profil Saya
+                  </NuxtLink>
+                  <NuxtLink
+                    to="/mahasiswa"
+                    class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-ink hover:bg-indigo-soft/50 transition"
+                    @click="showProfilMenu = false"
+                  >
+                    <svg class="w-4 h-4 text-ink-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Tulisan Saya
+                  </NuxtLink>
+                  <div class="border-t border-card-border mt-1 pt-1">
+                    <button
+                      type="button"
+                      @click="() => { auth.logout(); showProfilMenu = false }"
+                      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-500/10 transition"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </template>
 
           <!-- State: Logged In Dosen / Editor -->
@@ -83,12 +151,12 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-card-border py-12 mt-20">
+    <footer class="bg-card border-t border-card-border py-12 mt-20">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-card-border">
           <div class="md:col-span-2">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-8 h-8 rounded-xl bg-indigo-brand text-white flex items-center justify-center font-heading font-bold text-sm">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white flex items-center justify-center font-heading font-bold text-sm shadow">
                 AK
               </div>
               <span class="font-heading font-bold text-base text-ink">Aksara Kampus</span>
@@ -129,7 +197,55 @@
 
 <script setup lang="ts">
 const auth = useAuthStore()
+const isDark = ref(false)
+const showProfilMenu = ref(false)
+const profilDropdown = ref<HTMLElement | null>(null)
+
+const navInitials = computed(() => {
+  const name = auth.user?.name || ''
+  return name.split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase() || 'AK'
+})
+
+onMounted(() => {
+  if (import.meta.client) {
+    const saved = localStorage.getItem('theme')
+    if (saved) {
+      isDark.value = saved === 'dark'
+    } else {
+      isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    // Tutup dropdown ketika klik di luar
+    document.addEventListener('click', (e) => {
+      if (profilDropdown.value && !profilDropdown.value.contains(e.target as Node)) {
+        showProfilMenu.value = false
+      }
+    })
+  }
+})
+
+function toggleTheme() {
+  if (!import.meta.client) return
+  isDark.value = !isDark.value
+  const mode = isDark.value ? 'dark' : 'light'
+  document.documentElement.setAttribute('data-theme', mode)
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+  localStorage.setItem('theme', mode)
+}
 </script>
+
+<style scoped>
+.nav-item {
+  @apply px-3.5 py-2 rounded-xl text-xs font-medium text-ink-muted hover:text-ink hover:bg-indigo-soft/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-brand;
+}
+.nav-item-active {
+  @apply text-indigo-brand bg-indigo-soft font-semibold;
+}
+</style>
 
 <style scoped>
 .nav-item {

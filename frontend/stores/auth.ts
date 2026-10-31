@@ -8,6 +8,8 @@ export interface AuthUser {
   username?: string
   email: string
   role: 'mahasiswa' | 'dosen' | string
+  bio?: string | null
+  angkatan?: string | null
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -106,6 +108,35 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function updateProfil(payload: { name: string; username: string; bio?: string; angkatan?: string }) {
+    const res = await $fetch<{ message: string; data: AuthUser }>(`${apiBase}/auth/profil`, {
+      method: 'PUT',
+      body: payload,
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        Accept: 'application/json',
+      },
+    })
+    user.value = res.data
+    userCookie.value = res.data
+    return res
+  }
+
+  async function gantiPassword(payload: { password_lama: string; password_baru: string; password_baru_confirmation: string }) {
+    const res = await $fetch<{ message: string; data: { token: string } }>(`${apiBase}/auth/ganti-password`, {
+      method: 'PUT',
+      body: payload,
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        Accept: 'application/json',
+      },
+    })
+    // Update dengan token baru (token lama dihapus oleh server)
+    token.value = res.data.token
+    tokenCookie.value = res.data.token
+    return res
+  }
+
   function logout() {
     if (token.value) {
       $fetch(`${apiBase}/auth/logout`, {
@@ -135,5 +166,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     fetchMe,
+    updateProfil,
+    gantiPassword,
   }
 })

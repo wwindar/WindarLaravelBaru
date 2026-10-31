@@ -30,7 +30,7 @@
         type="button"
         @click="activeTab = tab.value"
         class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition"
-        :class="activeTab === tab.value ? 'bg-indigo-brand text-white shadow-sm' : 'bg-white border border-card-border text-ink-muted hover:text-ink'"
+        :class="activeTab === tab.value ? 'bg-indigo-brand text-white shadow-sm' : 'bg-card border border-card-border text-ink-muted hover:text-ink'"
       >
         {{ tab.label }}
         <span v-if="tab.count !== undefined" class="ml-1 opacity-75 font-normal">({{ tab.count }})</span>

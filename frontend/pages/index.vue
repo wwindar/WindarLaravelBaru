@@ -17,7 +17,7 @@
       </p>
 
       <!-- Kolom Pencarian Cepat di Hero -->
-      <form @submit.prevent="handleHeroSearch" class="mt-8 max-w-xl mx-auto flex items-center gap-2 p-1.5 bg-white border border-card-border rounded-2xl shadow-card focus-within:border-indigo-brand focus-within:ring-2 focus-within:ring-indigo-soft">
+      <form @submit.prevent="handleHeroSearch" class="mt-8 max-w-xl mx-auto flex items-center gap-2 p-1.5 bg-card border border-card-border rounded-2xl shadow-card focus-within:border-indigo-brand focus-within:ring-2 focus-within:ring-indigo-soft">
         <label for="hero-search" class="sr-only">Cari judul atau isi karya sastra</label>
         <div class="pl-3 text-ink-subtle">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,10 +199,10 @@
           <article
             v-for="b in beritaList"
             :key="b.id"
-            class="p-5 rounded-2xl bg-white border border-card-border hover:border-amber-400 transition shadow-sm flex flex-col justify-between"
+            class="p-5 rounded-2xl bg-card border border-card-border hover:border-amber-400 transition shadow-sm flex flex-col justify-between"
           >
             <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full inline-block mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full inline-block mb-2 border border-amber-500/20">
                 Info Resmi
               </span>
               <NuxtLink :to="`/berita/${b.slug}`" class="block group">
@@ -230,7 +230,7 @@
 
     <!-- 4. Penjelasan Tiga Peran Pengguna -->
     <section class="max-w-6xl mx-auto px-4 sm:px-6">
-      <div class="card p-8 sm:p-12 border-indigo-brand/20 bg-gradient-to-b from-white to-indigo-soft/20">
+      <div class="card p-8 sm:p-12 border-indigo-brand/20 bg-gradient-to-b from-card to-indigo-soft/10">
         <div class="max-w-2xl mb-10">
           <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Struktur Komunitas</span>
           <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Tiga Peran di Aksara Kampus</h2>
@@ -241,9 +241,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Peran 1: Mahasiswa -->
-          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand flex items-center justify-center font-bold text-lg mb-4">
-              🎓
+          <div class="p-6 rounded-2xl bg-card border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand flex items-center justify-center font-bold text-sm mb-4">
+              01
             </div>
             <h3 class="font-heading text-base font-bold text-ink mb-2">Mahasiswa (Penulis)</h3>
             <ul class="space-y-2 text-xs text-ink-muted">
@@ -256,9 +256,9 @@
           </div>
 
           <!-- Peran 2: Dosen / Editor -->
-          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg mb-4">
-              ✒️
+          <div class="p-6 rounded-2xl bg-card border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-300 flex items-center justify-center font-bold text-sm mb-4">
+              02
             </div>
             <h3 class="font-heading text-base font-bold text-ink mb-2">Dosen / Editor</h3>
             <ul class="space-y-2 text-xs text-ink-muted">
@@ -271,9 +271,9 @@
           </div>
 
           <!-- Peran 3: Pengunjung Publik -->
-          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mb-4">
-              📖
+          <div class="p-6 rounded-2xl bg-card border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-300 flex items-center justify-center font-bold text-sm mb-4">
+              03
             </div>
             <h3 class="font-heading text-base font-bold text-ink mb-2">Pengunjung Publik</h3>
             <ul class="space-y-2 text-xs text-ink-muted">
