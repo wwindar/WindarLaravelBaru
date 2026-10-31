@@ -1,75 +1,123 @@
 <template>
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-6">
-    <div class="flex items-center gap-3">
-      <NuxtLink to="/agenda" class="text-slate-400 hover:text-white transition">
-        ← Kembali ke Agenda
-      </NuxtLink>
-    </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-ink-muted mb-6" aria-label="Breadcrumb">
+      <NuxtLink to="/" class="hover:text-indigo-brand">Beranda</NuxtLink>
+      <span>/</span>
+      <NuxtLink to="/agenda" class="hover:text-indigo-brand">Agenda Kegiatan</NuxtLink>
+      <span>/</span>
+      <span class="text-ink truncate font-medium max-w-xs">{{ agenda?.judul || 'Detail Acara' }}</span>
+    </nav>
 
-    <div v-if="loading" class="card p-12 text-center text-slate-500 animate-pulse">
-      Memuat informasi agenda...
-    </div>
+    <!-- 4 Kondisi State -->
+    <DataState
+      :loading="loading"
+      :error="errorMsg"
+      :empty="!agenda && !loading && !errorMsg"
+      empty-title="Agenda Tidak Ditemukan"
+      empty-description="Jadwal kegiatan sastra yang Anda cari tidak tersedia atau tautan salah."
+      @retry="fetchDetail"
+    >
+      <template #empty-action>
+        <NuxtLink to="/agenda" class="btn-primary text-xs px-4 py-2">
+          Kembali ke Agenda
+        </NuxtLink>
+      </template>
 
-    <div v-else-if="!agenda" class="card p-12 text-center text-slate-500">
-      Kegiatan tidak ditemukan.
-    </div>
-
-    <article v-else class="card p-6 sm:p-10 space-y-6">
-      <div class="space-y-3 border-b border-slate-800 pb-6">
-        <span class="badge-green capitalize">{{ agenda.jenis?.replace('_', ' ') }}</span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-          {{ agenda.judul }}
-        </h1>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-400 pt-2">
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
-            <span class="block text-slate-500 font-semibold mb-0.5">Waktu Mulai:</span>
-            <span class="text-slate-200">{{ formatTanggalLengkap(agenda.mulai_pada) }}</span>
+      <article v-if="agenda" class="card p-6 sm:p-12 space-y-8">
+        <header class="space-y-4 pb-6 border-b border-card-border">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-soft text-indigo-brand capitalize">
+              {{ formatJenis(agenda.jenis) }}
+            </span>
+            <span v-if="agenda.kuota" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+              Kapasitas: {{ agenda.kuota }} Orang
+            </span>
           </div>
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
-            <span class="block text-slate-500 font-semibold mb-0.5">Waktu Selesai:</span>
-            <span class="text-slate-200">{{ formatTanggalLengkap(agenda.selesai_pada) }}</span>
+
+          <h1 class="font-heading text-2xl sm:text-4xl font-extrabold text-ink leading-tight">
+            {{ agenda.judul }}
+          </h1>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-canvas border border-card-border text-xs text-ink">
+            <div>
+              <span class="text-ink-subtle block mb-0.5">Waktu Pelaksanaan:</span>
+              <p class="font-semibold">{{ formatWaktu(agenda.mulai_pada) }}</p>
+              <p v-if="agenda.selesai_pada" class="text-ink-muted">s.d. {{ formatWaktu(agenda.selesai_pada) }}</p>
+            </div>
+            <div>
+              <span class="text-ink-subtle block mb-0.5">Lokasi / Tempat Acara:</span>
+              <p class="font-semibold">{{ agenda.lokasi }}</p>
+            </div>
           </div>
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 sm:col-span-2">
-            <span class="block text-slate-500 font-semibold mb-0.5">Lokasi Pelaksanaan:</span>
-            <span class="text-amber-400 font-semibold">📍 {{ agenda.lokasi }}</span>
-            <span v-if="agenda.kuota" class="ml-3 text-slate-400">(Kuota peserta: {{ agenda.kuota }} orang)</span>
+        </header>
+
+        <div>
+          <h2 class="font-heading text-base font-bold text-ink mb-3">Tentang Kegiatan</h2>
+          <div class="prose max-w-none text-ink text-sm sm:text-base leading-relaxed whitespace-pre-line font-sans">
+            {{ agenda.deskripsi }}
           </div>
         </div>
-      </div>
 
-      <div class="space-y-3">
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Deskripsi Kegiatan</h3>
-        <p class="text-slate-300 text-base leading-relaxed whitespace-pre-line">
-          {{ agenda.deskripsi }}
-        </p>
-      </div>
-    </article>
+        <footer class="pt-8 border-t border-card-border flex items-center justify-between text-xs text-ink-muted">
+          <NuxtLink to="/agenda" class="text-indigo-brand hover:underline font-semibold">
+            ← Kembali ke Seluruh Agenda
+          </NuxtLink>
+          <NuxtLink to="/register" class="btn-primary text-xs px-4 py-2" v-if="!auth.isLoggedIn">
+            Gabung Civitas Kampus
+          </NuxtLink>
+        </footer>
+      </article>
+    </DataState>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
-
 const route = useRoute()
-const { request } = useApi()
+const auth = useAuthStore()
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase as string
 
+const slug = computed(() => route.params.slug as string)
 const agenda = ref<any>(null)
 const loading = ref(true)
+const errorMsg = ref('')
 
-function formatTanggalLengkap(d: string) {
-  if (!d) return '-'
-  return new Date(d).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' })
+function formatJenis(j: string) {
+  switch (j) {
+    case 'bedah_buku': return 'Bedah Buku'
+    case 'open_mic': return 'Panggung Puisi Terbuka'
+    case 'workshop': return 'Workshop Literasi'
+    case 'lomba': return 'Sayembara Sastra'
+    default: return j
+  }
 }
 
-onMounted(async () => {
+function formatWaktu(iso: string) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return d.toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+async function fetchDetail() {
+  loading.value = true
+  errorMsg.value = ''
   try {
-    const res = await request<{ data: any }>(`/agenda/${route.params.slug}`)
+    const res = await $fetch<any>(`${apiBase}/agenda/${slug.value}`)
     agenda.value = res.data
-  } catch {
-    agenda.value = null
+  } catch (err: any) {
+    errorMsg.value = err.data?.message || 'Kegiatan sastra tidak ditemukan.'
   } finally {
     loading.value = false
   }
-})
-</script>
+}
 
+onMounted(() => fetchDetail())
+</script>

@@ -1,0 +1,1 @@
+import{c as e,o as t}from"./CBQGvEIJ.js";import{t as n}from"#entry";var r=t(()=>{if(!n().isLoggedIn)return e(`/login`)});export{r as default};

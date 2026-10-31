@@ -1,0 +1,1 @@
+import{c as e}from"./CBQGvEIJ.js";import{F as t,f as n,l as r,y as i}from"./Ct1vF7ES.js";var a={class:`p-8 text-center`},o=i({__name:`index`,setup(i){return e(`/karya?jenis=artikel`),(e,i)=>(t(),n(`div`,a,[...i[0]||=[r(`p`,{class:`text-xs text-ink-muted`},`Mengalihkan ke kanal artikel...`,-1)]]))}});export{o as default};

@@ -1,96 +1,143 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-8">
-    <div>
-      <h1 class="text-3xl font-bold text-white">Agenda Sastra</h1>
-      <p class="text-slate-400 text-sm mt-1">Jadwal kegiatan lomba, bedah buku, panggung puisi terbuka, dan workshop literasi</p>
-    </div>
-
-    <!-- Filter -->
-    <div class="flex flex-col sm:flex-row gap-3">
-      <input v-model="filter.search" @input="debouncedFetch" type="text" placeholder="Cari nama kegiatan..." class="input flex-1" />
-      <select v-model="filter.waktu" @change="fetchAgenda" class="input sm:w-44">
-        <option value="">Semua Waktu</option>
-        <option value="mendatang">Mendatang</option>
-        <option value="lampau">Telah Selesai</option>
-      </select>
-      <select v-model="filter.jenis" @change="fetchAgenda" class="input sm:w-44">
-        <option value="">Semua Jenis</option>
-        <option value="bedah_buku">Bedah Buku</option>
-        <option value="lomba">Lomba Sastra</option>
-        <option value="open_mic">Open Mic</option>
-        <option value="workshop">Workshop</option>
-      </select>
-    </div>
-
-    <!-- Grid -->
-    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div v-for="i in 3" :key="i" class="card p-6 animate-pulse space-y-3">
-        <div class="h-4 bg-slate-800 rounded w-1/3"></div>
-        <div class="h-6 bg-slate-800 rounded w-3/4"></div>
-        <div class="h-16 bg-slate-800 rounded w-full"></div>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Kegiatan Literasi</span>
+        <h1 class="font-heading text-3xl font-extrabold text-ink">Agenda & Sayembara Sastra</h1>
+        <p class="text-xs sm:text-sm text-ink-muted mt-1">Jadwal bedah buku, lomba cipta sastra, panggung puisi terbuka, dan kelas kepenulisan.</p>
       </div>
     </div>
 
-    <div v-else-if="agendaList.length === 0" class="card py-16 text-center text-slate-500">
-      Tidak ada kegiatan sastra yang cocok.
+    <!-- Filter Bar -->
+    <div class="card p-5 space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label for="agenda-search" class="label">Cari Nama Kegiatan</label>
+          <input
+            id="agenda-search"
+            v-model="filter.search"
+            type="search"
+            placeholder="Ketik judul kegiatan..."
+            class="input"
+            @input="debouncedFetch"
+          />
+        </div>
+
+        <div>
+          <label for="agenda-waktu" class="label">Periode Waktu</label>
+          <select id="agenda-waktu" v-model="filter.waktu" class="input" @change="fetchAgenda">
+            <option value="">Semua Waktu</option>
+            <option value="mendatang">Kegiatan Mendatang</option>
+            <option value="lampau">Kegiatan Selesai</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="agenda-jenis" class="label">Jenis Acara</label>
+          <select id="agenda-jenis" v-model="filter.jenis" class="input" @change="fetchAgenda">
+            <option value="">Semua Format</option>
+            <option value="bedah_buku">Bedah Buku</option>
+            <option value="lomba">Lomba & Sayembara</option>
+            <option value="open_mic">Panggung Terbuka (Open Mic)</option>
+            <option value="workshop">Workshop & Lokakarya</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <NuxtLink
-        v-for="a in agendaList"
-        :key="a.id"
-        :to="`/agenda/${a.slug}`"
-        class="card p-6 hover:border-amber-500/20 hover:bg-slate-800/40 transition group flex flex-col justify-between"
-      >
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="badge-green capitalize">{{ a.jenis.replace('_', ' ') }}</span>
-            <span v-if="a.kuota" class="text-xs text-slate-400">Kuota: {{ a.kuota }}</span>
+    <!-- 4 Kondisi State -->
+    <DataState
+      :loading="loading"
+      :error="errorMsg"
+      :empty="agendaList.length === 0"
+      empty-title="Tidak ada agenda"
+      empty-description="Belum ada jadwal kegiatan sastra yang sesuai dengan filter waktu yang Anda pilih."
+      @retry="fetchAgenda"
+    >
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <NuxtLink
+          v-for="a in agendaList"
+          :key="a.id"
+          :to="`/agenda/${a.slug}`"
+          class="card card-hover p-6 flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-soft text-indigo-brand capitalize">
+                {{ formatJenis(a.jenis) }}
+              </span>
+              <span v-if="a.kuota" class="text-xs text-ink-subtle">
+                Kuota: {{ a.kuota }} Peserta
+              </span>
+            </div>
+
+            <h2 class="font-heading text-lg font-bold text-ink group-hover:text-indigo-brand transition leading-snug">
+              {{ a.judul }}
+            </h2>
+
+            <div class="space-y-1 mt-3 text-xs text-ink-muted">
+              <p class="flex items-center gap-1.5">
+                <span>📍</span>
+                <span class="truncate">{{ a.lokasi }}</span>
+              </p>
+              <p class="flex items-center gap-1.5">
+                <span>🗓️</span>
+                <span>{{ formatTanggal(a.mulai_pada) }}</span>
+              </p>
+            </div>
+
+            <p class="text-xs text-ink-muted mt-3 line-clamp-3 leading-relaxed">
+              {{ a.deskripsi }}
+            </p>
           </div>
-          <h2 class="text-lg font-bold text-white group-hover:text-amber-400 transition leading-snug">
-            {{ a.judul }}
-          </h2>
-          <p class="text-xs text-slate-400 mt-2">📍 {{ a.lokasi }}</p>
-          <p class="text-xs text-slate-500 mt-1">
-            🗓️ {{ formatTanggal(a.mulai_pada) }}
-          </p>
-          <p class="text-sm text-slate-400 mt-3 line-clamp-2 leading-relaxed">
-            {{ a.deskripsi }}
-          </p>
-        </div>
-        <div class="pt-4 border-t border-slate-800 mt-4 text-xs text-amber-500 font-semibold">
-          Detail Kegiatan →
-        </div>
-      </NuxtLink>
-    </div>
+
+          <div class="pt-4 border-t border-card-border mt-5 text-xs text-indigo-brand font-semibold flex items-center justify-between">
+            <span>Lihat Informasi Lengkap</span>
+            <span>→</span>
+          </div>
+        </NuxtLink>
+      </div>
+    </DataState>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase as string
 
-const { request } = useApi()
 const filter = reactive({ search: '', waktu: 'mendatang', jenis: '' })
 const agendaList = ref<any[]>([])
 const loading = ref(false)
+const errorMsg = ref('')
 
 function formatTanggal(d: string) {
   if (!d) return ''
   return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+function formatJenis(j: string) {
+  switch (j) {
+    case 'bedah_buku': return 'Bedah Buku'
+    case 'open_mic': return 'Open Mic'
+    case 'workshop': return 'Workshop'
+    case 'lomba': return 'Lomba Sastra'
+    default: return j
+  }
+}
+
 async function fetchAgenda() {
   loading.value = true
+  errorMsg.value = ''
   try {
     const params = new URLSearchParams()
     if (filter.search) params.append('search', filter.search)
     if (filter.waktu) params.append('waktu', filter.waktu)
     if (filter.jenis) params.append('jenis', filter.jenis)
 
-    const res = await request<{ data: any[] }>(`/agenda?${params}`)
-    agendaList.value = res.data
-  } catch {
-    agendaList.value = []
+    const res = await $fetch<any>(`${apiBase}/agenda?${params.toString()}`)
+    agendaList.value = res.data || []
+  } catch (err: any) {
+    errorMsg.value = err.data?.message || 'Gagal memuat agenda kegiatan.'
   } finally {
     loading.value = false
   }
@@ -104,4 +151,3 @@ const debouncedFetch = () => {
 
 onMounted(() => fetchAgenda())
 </script>
-

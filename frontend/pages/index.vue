@@ -1,172 +1,288 @@
 <template>
-  <div>
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden py-24 sm:py-32">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-ochre-400/10 rounded-full blur-3xl"></div>
-        <div class="absolute top-40 right-10 w-[400px] h-[300px] bg-sage-300/10 rounded-full blur-3xl"></div>
+  <div class="space-y-16 sm:space-y-24 py-8 sm:py-12">
+    <!-- 1. Hero Section (Tanpa Foto) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-soft text-indigo-brand text-xs font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-indigo-brand animate-pulse"></span>
+        Platform Literasi & Sastra Digital Kampus
       </div>
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-ochre-400/30 bg-ochre-400/10 text-ochre-300 text-xs font-semibold mb-6">
-          <span class="w-2 h-2 rounded-full bg-ochre-400 animate-pulse"></span>
-          Portal Komunitas Sastra UMPKU
+
+      <h1 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight max-w-4xl mx-auto leading-tight">
+        Menghidupkan Kata, <br class="hidden sm:inline" />
+        <span class="text-indigo-brand">Merawat Nalar Sastra</span> Kampus
+      </h1>
+
+      <p class="mt-5 text-base sm:text-lg text-ink-muted max-w-2xl mx-auto leading-relaxed">
+        Ruang terbuka bagi mahasiswa untuk menerbitkan puisi, cerpen, esai kritis, dan artikel pemikiran yang dikurasi langsung oleh dewan dosen editor.
+      </p>
+
+      <!-- Kolom Pencarian Cepat di Hero -->
+      <form @submit.prevent="handleHeroSearch" class="mt-8 max-w-xl mx-auto flex items-center gap-2 p-1.5 bg-white border border-card-border rounded-2xl shadow-card focus-within:border-indigo-brand focus-within:ring-2 focus-within:ring-indigo-soft">
+        <label for="hero-search" class="sr-only">Cari judul atau isi karya sastra</label>
+        <div class="pl-3 text-ink-subtle">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
-        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-parchment-50 tracking-tight leading-tight">
-          Aksara<br>
-          <span class="bg-gradient-to-r from-ochre-400 via-terracotta-400 to-sage-300 bg-clip-text text-transparent">Kampus</span>
-        </h1>
-        <p class="mt-6 text-base sm:text-lg text-parchment-400 max-w-2xl mx-auto leading-relaxed">
-          Ruang dialektika dan ekspresi sastra mahasiswa — puisi, cerpen, esai, kabar komunitas literasi, dan agenda kreatif.
+        <input
+          id="hero-search"
+          v-model="searchQuery"
+          type="search"
+          placeholder="Cari judul puisi, cerpen, esai, atau penulis..."
+          class="w-full py-2.5 px-2 text-sm text-ink bg-transparent focus:outline-none placeholder-ink-subtle"
+        />
+        <button type="submit" class="btn-primary text-xs px-5 py-2.5 shrink-0">
+          Cari
+        </button>
+      </form>
+
+      <!-- CTA Links -->
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2">
+          Jelajahi Seluruh Karya
+        </NuxtLink>
+        <NuxtLink v-if="!auth.isLoggedIn" to="/register" class="btn-ghost text-xs px-4 py-2 text-indigo-brand hover:bg-indigo-soft font-semibold">
+          Daftar Sebagai Penulis →
+        </NuxtLink>
+        <NuxtLink v-else-if="auth.isMahasiswa" to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2">
+          + Mulai Menulis Sekarang
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- 2. Alur Penerbitan (Tulis -> Ajukan -> Setujui -> Terbit) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Mekanisme Kurasi</span>
+        <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Alur Publikasi Naskah Kampus</h2>
+        <p class="text-xs sm:text-sm text-ink-muted mt-2">
+          Setiap naskah melalui proses telaah yang transparan demi menjaga mutu karya dan integritas intelektual.
         </p>
-        <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
-          <NuxtLink to="/karya" class="btn-primary px-6 py-2.5">
-            Baca Karya Terbaru
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Langkah 1: Tulis -->
+        <div class="card p-6 relative group hover:border-indigo-brand/40 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand font-heading font-bold text-base flex items-center justify-center mb-4">
+            1
+          </div>
+          <h3 class="font-heading text-base font-bold text-ink mb-2">Tulis Draf</h3>
+          <p class="text-xs text-ink-muted leading-relaxed">
+            Mahasiswa menyusun naskah (puisi, cerpen, esai, atau artikel) dan menyimpannya sebagai draf pribadi sewaktu-waktu.
+          </p>
+        </div>
+
+        <!-- Langkah 2: Ajukan -->
+        <div class="card p-6 relative group hover:border-indigo-brand/40 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand font-heading font-bold text-base flex items-center justify-center mb-4">
+            2
+          </div>
+          <h3 class="font-heading text-base font-bold text-ink mb-2">Ajukan Publikasi</h3>
+          <p class="text-xs text-ink-muted leading-relaxed">
+            Satu klik "Ajukan publikasi" mengirim naskah ke antrean telaah dosen/editor dengan status Menunggu Persetujuan.
+          </p>
+        </div>
+
+        <!-- Langkah 3: Setujui / Revisi -->
+        <div class="card p-6 relative group hover:border-indigo-brand/40 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand font-heading font-bold text-base flex items-center justify-center mb-4">
+            3
+          </div>
+          <h3 class="font-heading text-base font-bold text-ink mb-2">Telaah Dosen</h3>
+          <p class="text-xs text-ink-muted leading-relaxed">
+            Dosen menelaah naskah. Dosen dapat menyetujui, meminta revisi dengan catatan wajib, atau menolak secara objektif.
+          </p>
+        </div>
+
+        <!-- Langkah 4: Terbit -->
+        <div class="card p-6 relative group hover:border-indigo-brand/40 transition">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 font-heading font-bold text-base flex items-center justify-center mb-4">
+            4
+          </div>
+          <h3 class="font-heading text-base font-bold text-ink mb-2">Terbit Otomatis</h3>
+          <p class="text-xs text-ink-muted leading-relaxed">
+            Karya yang disetujui langsung terbit di katalog publik. Mahasiswa menerima notifikasi in-app bahwa karyanya telah tayang.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Tulisan Baru Terbit (Card Grid dengan 4 Kondisi State) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Katalog Publik</span>
+          <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Tulisan Baru Terbit</h2>
+          <p class="text-xs sm:text-sm text-ink-muted mt-1">Karya pilihan mahasiswa yang telah lolos kurasi kurator redaksi.</p>
+        </div>
+        <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2 self-start sm:self-auto">
+          Lihat Semua ({{ totalKarya }}) →
+        </NuxtLink>
+      </div>
+
+      <DataState
+        :loading="isLoading"
+        :error="errorMessage"
+        :empty="tulisanList.length === 0"
+        empty-title="Belum ada tulisan terbit"
+        empty-description="Jadilah penulis pertama yang menerbitkan karyanya di Aksara Kampus!"
+        @retry="fetchLatestTulisan"
+      >
+        <template #empty-action>
+          <NuxtLink v-if="!auth.isLoggedIn" to="/register" class="btn-primary text-xs px-5 py-2.5">
+            Daftar & Kirim Naskah
           </NuxtLink>
-          <NuxtLink to="/kirim" class="btn-ghost px-6 py-2.5">
-            Kirim Naskahmu
+          <NuxtLink v-else-if="auth.isMahasiswa" to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-5 py-2.5">
+            + Tulis Karya Pertama
           </NuxtLink>
-        </div>
-      </div>
-    </section>
+        </template>
 
-    <!-- Artikel Terbaru -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-parchment-100">Artikel & Berita</h2>
-          <p class="text-xs text-parchment-500 mt-0.5">Ulasan dan liputan literasi terkini</p>
-        </div>
-        <NuxtLink to="/artikel" class="text-sm font-semibold text-ochre-400 hover:text-ochre-300 transition">Lihat semua →</NuxtLink>
-      </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <article
+            v-for="item in tulisanList"
+            :key="item.id"
+            class="card card-hover p-6 flex flex-col justify-between"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-soft text-indigo-brand capitalize">
+                  {{ item.jenis_label || item.jenis }}
+                </span>
+                <span class="text-[11px] text-ink-subtle">
+                  {{ formatDate(item.diterbitkan_pada) }}
+                </span>
+              </div>
 
-      <div v-if="loadingArtikel" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div v-for="i in 3" :key="i" class="card p-5 animate-pulse space-y-3">
-          <div class="h-3 bg-ink-800 rounded w-1/3" />
-          <div class="h-5 bg-ink-800 rounded w-3/4" />
-          <div class="h-3 bg-ink-800 rounded w-full" />
-          <div class="h-3 bg-ink-800 rounded w-5/6" />
-        </div>
-      </div>
+              <NuxtLink :to="`/karya/${item.slug}`" class="block group">
+                <h3 class="font-heading text-lg font-bold text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
+                  {{ item.judul }}
+                </h3>
+              </NuxtLink>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <NuxtLink
-          v-for="art in artikelTerbaru"
-          :key="art.id"
-          :to="`/artikel/${art.slug}`"
-          class="card p-6 hover:border-ochre-400/40 hover:bg-ink-850/80 transition-all group flex flex-col justify-between"
-        >
-          <div>
-            <div class="flex items-center gap-2 mb-3">
-              <span :class="art.jenis === 'berita' ? 'badge-ochre' : 'badge-sage'">{{ art.jenis }}</span>
-              <span v-if="art.kategori" class="text-xs text-parchment-400">{{ art.kategori.nama }}</span>
+              <p class="text-xs text-ink-muted mt-2.5 line-clamp-3 leading-relaxed">
+                {{ item.ringkasan || 'Klik tautan untuk membaca selengkapnya.' }}
+              </p>
             </div>
-            <h3 class="font-bold text-lg text-parchment-100 group-hover:text-ochre-300 transition leading-snug">{{ art.judul }}</h3>
-            <p class="text-sm text-parchment-400 mt-2 leading-relaxed line-clamp-3">{{ art.ringkasan }}</p>
-          </div>
-          <p class="text-xs text-parchment-500 mt-4 pt-3 border-t border-ink-800/80">{{ art.penulis }}</p>
-        </NuxtLink>
-      </div>
-    </section>
 
-    <!-- Karya Pilihan -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-parchment-100">Karya Sastra Terbit</h2>
-          <p class="text-xs text-parchment-500 mt-0.5">Puisi, cerpen, dan esai pilihan redaksi</p>
-        </div>
-        <NuxtLink to="/karya" class="text-sm font-semibold text-ochre-400 hover:text-ochre-300 transition">Lihat semua →</NuxtLink>
-      </div>
-
-      <div v-if="loadingKarya" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div v-for="i in 4" :key="i" class="card p-6 animate-pulse space-y-3">
-          <div class="h-3 bg-ink-800 rounded w-1/4" />
-          <div class="h-5 bg-ink-800 rounded w-2/3" />
-          <div class="h-16 bg-ink-800 rounded w-full" />
-        </div>
-      </div>
-
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <NuxtLink
-          v-for="k in karyaPilihan"
-          :key="k.id"
-          :to="`/karya/${k.slug}`"
-          class="card p-6 hover:border-terracotta-500/40 hover:bg-ink-850/80 transition-all group flex flex-col justify-between"
-        >
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="badge-terracotta capitalize">{{ k.jenis }}</span>
-              <span class="text-xs text-ochre-400/70 font-mono">{{ k.nomor_kiriman }}</span>
+            <div class="pt-4 mt-4 border-t border-card-border flex items-center justify-between text-xs text-ink-muted">
+              <span class="font-medium text-ink truncate">
+                Oleh {{ item.penulis?.name }}
+              </span>
+              <NuxtLink :to="`/karya/${item.slug}`" class="text-indigo-brand hover:underline font-semibold shrink-0">
+                Baca naskah →
+              </NuxtLink>
             </div>
-            <h3 class="font-bold text-xl text-parchment-100 group-hover:text-ochre-300 transition">{{ k.judul }}</h3>
-            <p class="text-xs text-parchment-400 mt-1">Oleh <strong class="text-parchment-200">{{ k.nama_penulis }}</strong></p>
-            <p class="text-sm text-parchment-300/80 mt-4 leading-relaxed line-clamp-3 font-mono bg-ink-950/60 p-3.5 rounded-xl border border-ink-800/60">
-              {{ k.isi?.substring(0, 160) }}...
-            </p>
-          </div>
-          <span class="text-xs text-ochre-400 font-semibold mt-4 block">Baca naskah lengkap →</span>
-        </NuxtLink>
-      </div>
+          </article>
+        </div>
+      </DataState>
     </section>
 
-    <!-- Agenda Sastra -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-parchment-100">Agenda Kegiatan</h2>
-          <p class="text-xs text-parchment-500 mt-0.5">Lomba, bedah buku, dan kelas kepenulisan</p>
+    <!-- 4. Penjelasan Tiga Peran Pengguna -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="card p-8 sm:p-12 border-indigo-brand/20 bg-gradient-to-b from-white to-indigo-soft/20">
+        <div class="max-w-2xl mb-10">
+          <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Struktur Komunitas</span>
+          <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Tiga Peran di Aksara Kampus</h2>
+          <p class="text-xs sm:text-sm text-ink-muted mt-2">
+            Sistem dirancang dengan hak akses terpisah demi alur kerja penerbitan yang rapi, akuntabel, dan aman.
+          </p>
         </div>
-        <NuxtLink to="/agenda" class="text-sm font-semibold text-ochre-400 hover:text-ochre-300 transition">Lihat semua →</NuxtLink>
-      </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div v-if="loadingAgenda" v-for="i in 3" :key="i" class="card p-5 animate-pulse space-y-3">
-          <div class="h-3 bg-ink-800 rounded w-1/3" />
-          <div class="h-5 bg-ink-800 rounded w-2/3" />
-        </div>
-        <div v-else-if="agenda.length === 0" class="col-span-full text-center py-8 text-parchment-500 text-sm">Belum ada agenda mendatang.</div>
-        <NuxtLink
-          v-else
-          v-for="a in agenda"
-          :key="a.id"
-          :to="`/agenda/${a.slug}`"
-          class="card p-6 hover:border-sage-300/40 hover:bg-ink-850/80 transition-all group flex flex-col justify-between"
-        >
-          <div>
-            <span class="badge-sage mb-3 inline-block capitalize">{{ a.jenis.replace('_', ' ') }}</span>
-            <h3 class="font-bold text-lg text-parchment-100 group-hover:text-sage-300 transition">{{ a.judul }}</h3>
-            <p class="text-xs text-parchment-400 mt-2">📍 {{ a.lokasi }}</p>
-            <p class="text-xs text-ochre-400 font-mono mt-1">🗓️ {{ formatTanggal(a.mulai_pada) }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Peran 1: Mahasiswa -->
+          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-indigo-soft text-indigo-brand flex items-center justify-center font-bold text-lg mb-4">
+              🎓
+            </div>
+            <h3 class="font-heading text-base font-bold text-ink mb-2">Mahasiswa (Penulis)</h3>
+            <ul class="space-y-2 text-xs text-ink-muted">
+              <li>• Masuk menggunakan email resmi kampus</li>
+              <li>• Membuat, mengedit, & mengelola draf tulisan</li>
+              <li>• Mengajukan naskah untuk telaah kurasi</li>
+              <li>• Memantau status (Draf, Menunggu, Terbit, Revisi, Ditolak)</li>
+              <li>• Mendapat notifikasi in-app saat status diperbarui</li>
+            </ul>
           </div>
-          <span class="text-xs text-sage-300 font-semibold mt-4 pt-3 border-t border-ink-800/80 block">Detail Kegiatan →</span>
-        </NuxtLink>
+
+          <!-- Peran 2: Dosen / Editor -->
+          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg mb-4">
+              ✒️
+            </div>
+            <h3 class="font-heading text-base font-bold text-ink mb-2">Dosen / Editor</h3>
+            <ul class="space-y-2 text-xs text-ink-muted">
+              <li>• Akun disiapkan melalui seeder dewan redaksi</li>
+              <li>• Membaca antrean naskah yang masuk</li>
+              <li>• Menyetujui naskah dalam satu klik (langsung terbit)</li>
+              <li>• Meminta revisi atau menolak dengan catatan edukatif</li>
+              <li>• Meninjau laporan aduan plagiasi dari publik</li>
+            </ul>
+          </div>
+
+          <!-- Peran 3: Pengunjung Publik -->
+          <div class="p-6 rounded-2xl bg-white border border-card-border shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mb-4">
+              📖
+            </div>
+            <h3 class="font-heading text-base font-bold text-ink mb-2">Pengunjung Publik</h3>
+            <ul class="space-y-2 text-xs text-ink-muted">
+              <li>• Tanpa perlu login atau mendaftar</li>
+              <li>• Bebas membaca seluruh karya yang telah terbit</li>
+              <li>• Cari naskah dan filter kategori/penulis/tanggal</li>
+              <li>• Membagikan karya ke media sosial / tautan langsung</li>
+              <li>• Laporkan tulisan jika menemukan indikasi plagiarisme</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+const auth = useAuthStore()
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase as string
 
-const { request } = useApi()
+const searchQuery = ref('')
+const isLoading = ref(true)
+const errorMessage = ref('')
+const tulisanList = ref<any[]>([])
+const totalKarya = ref(0)
 
-const artikelTerbaru = ref<any[]>([])
-const karyaPilihan   = ref<any[]>([])
-const agenda         = ref<any[]>([])
-const loadingArtikel = ref(true)
-const loadingKarya   = ref(true)
-const loadingAgenda  = ref(true)
-
-function formatTanggal(d: string) {
-  if (!d) return ''
-  return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+function handleHeroSearch() {
+  if (searchQuery.value.trim()) {
+    navigateTo({ path: '/karya', query: { search: searchQuery.value.trim() } })
+  } else {
+    navigateTo('/karya')
+  }
 }
 
-onMounted(async () => {
-  Promise.allSettled([
-    request<{ data: any[] }>('/artikel?per_page=6').then(r => { artikelTerbaru.value = r.data; loadingArtikel.value = false }).catch(() => { loadingArtikel.value = false }),
-    request<{ data: any[] }>('/karya?per_page=4').then(r => { karyaPilihan.value = r.data; loadingKarya.value = false }).catch(() => { loadingKarya.value = false }),
-    request<{ data: any[] }>('/agenda?waktu=mendatang&per_page=3').then(r => { agenda.value = r.data; loadingAgenda.value = false }).catch(() => { loadingAgenda.value = false }),
-  ])
+async function fetchLatestTulisan() {
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    const res = await $fetch<any>(`${apiBase}/tulisan?per_page=6`)
+    tulisanList.value = res.data || []
+    totalKarya.value = res.meta?.total || tulisanList.value.length
+  } catch (err: any) {
+    errorMessage.value = err.data?.message || 'Gagal memuat daftar tulisan terbaru. Pastikan backend aktif.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function formatDate(iso: string) {
+  if (!iso) return 'Baru terbit'
+  const d = new Date(iso)
+  return d.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+onMounted(() => {
+  fetchLatestTulisan()
 })
 </script>

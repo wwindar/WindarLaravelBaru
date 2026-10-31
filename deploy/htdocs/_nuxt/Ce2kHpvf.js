@@ -1,0 +1,1 @@
+import{c as e,o as t}from"./CBQGvEIJ.js";import{t as n}from"#entry";var r=t(()=>{let t=n();if(!t.isLoggedIn)return e(`/login`);if(t.user?.role!==`dosen`)return t.user?.role===`mahasiswa`?e(`/mahasiswa`):e(`/`)});export{r as default};

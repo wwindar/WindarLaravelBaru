@@ -41,10 +41,10 @@ class User extends Authenticatable
         return $this->hasMany(Notifikasi::class);
     }
 
-    /** Apakah user berstatus dosen/editor? */
+    /** Apakah user berstatus dosen/editor/admin? */
     public function isDosen(): bool
     {
-        return $this->role === 'dosen';
+        return in_array($this->role, ['dosen', 'admin'], true);
     }
 
     /** Apakah user berstatus mahasiswa/penulis? */
@@ -54,9 +54,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Alias lama — dipertahankan agar kode lama tidak error.
-     *
-     * @deprecated Gunakan isDosen() atau isMahasiswa().
+     * Alias — sama dengan isDosen(), mencakup role 'dosen' dan 'admin'.
      */
     public function isAdmin(): bool
     {

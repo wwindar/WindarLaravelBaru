@@ -1,5 +1,9 @@
 <?php
 
+use App\Enums\StatusTulisan;
+use App\Models\LaporanTulisan;
+use App\Models\Notifikasi;
+use App\Models\Tulisan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,6 +94,70 @@ Route::middleware(['auth'])->group(function () {
 
         return view('admin.dashboard');
     })->name('admin.dashboard');
+
+    // ── Aksi moderasi tulisan dari web admin ──────────────────────────────
+    Route::post('/admin/tulisan/{id}/setujui', function ($id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+        $tulisan = Tulisan::findOrFail($id);
+        $tulisan->update([
+            'status'          => StatusTulisan::Terbit,
+            'diterbitkan_pada' => now(),
+            'catatan_editor'  => null,
+        ]);
+        Notifikasi::create([
+            'user_id' => $tulisan->user_id,
+            'judul'   => 'Tulisan Disetujui & Terbit',
+            'isi'     => 'Tulisan "' . $tulisan->judul . '" telah disetujui dan kini terbit.',
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Tulisan "' . $tulisan->judul . '" berhasil diterbitkan.');
+    })->name('admin.tulisan.setujui');
+
+    Route::post('/admin/tulisan/{id}/revisi', function (Request $request, $id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+        $catatan = $request->input('catatan_editor', '');
+        if (empty(trim($catatan))) {
+            return redirect()->route('admin.dashboard')->with('error', 'Catatan revisi wajib diisi.');
+        }
+        $tulisan = Tulisan::findOrFail($id);
+        $tulisan->update([
+            'status'         => StatusTulisan::PerluRevisi,
+            'catatan_editor' => $catatan,
+        ]);
+        Notifikasi::create([
+            'user_id' => $tulisan->user_id,
+            'judul'   => 'Tulisan Perlu Revisi',
+            'isi'     => 'Tulisan "' . $tulisan->judul . '" perlu direvisi. Catatan: ' . $catatan,
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Tulisan dikembalikan untuk direvisi.');
+    })->name('admin.tulisan.revisi');
+
+    Route::post('/admin/tulisan/{id}/tolak', function (Request $request, $id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+        $catatan = $request->input('catatan_editor', '');
+        if (empty(trim($catatan))) {
+            return redirect()->route('admin.dashboard')->with('error', 'Catatan penolakan wajib diisi.');
+        }
+        $tulisan = Tulisan::findOrFail($id);
+        $tulisan->update([
+            'status'         => StatusTulisan::Ditolak,
+            'catatan_editor' => $catatan,
+        ]);
+        Notifikasi::create([
+            'user_id' => $tulisan->user_id,
+            'judul'   => 'Tulisan Ditolak',
+            'isi'     => 'Tulisan "' . $tulisan->judul . '" ditolak. Alasan: ' . $catatan,
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Tulisan berhasil ditolak.');
+    })->name('admin.tulisan.tolak');
 
     Route::post('/admin/logout', function (Request $request) {
         Auth::logout();

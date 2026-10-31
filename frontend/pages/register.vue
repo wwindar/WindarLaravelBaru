@@ -1,131 +1,155 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
-      <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-rose-500/5 rounded-full blur-3xl" />
-    </div>
-
-    <div class="w-full max-w-sm relative">
-      <div class="card p-8 shadow-2xl">
-        <div class="text-center mb-8">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center font-bold text-slate-900 text-2xl shadow-lg shadow-amber-500/20 mx-auto mb-4">
+  <div class="min-h-[calc(100vh-4rem)] flex items-stretch">
+    <!-- Panel Kiri: Indigo Gelap #1E1650 (Desktop) -->
+    <div class="hidden lg:flex lg:w-1/2 bg-[#1E1650] text-white p-12 lg:p-16 flex-col justify-between relative overflow-hidden">
+      <div class="relative z-10">
+        <NuxtLink to="/" class="inline-flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-brand text-white flex items-center justify-center font-heading font-bold text-base shadow">
             AK
           </div>
-          <h1 class="text-xl font-bold text-white">Gabung Aksara Kampus</h1>
-          <p class="text-sm text-slate-400 mt-1">Khusus Mahasiswa & Civitas UMPKU</p>
-          <div class="mt-3 p-2.5 rounded-lg bg-ochre-400/10 border border-ochre-400/20 text-xs text-ochre-300">
-            🔒 Wajib menggunakan email resmi kampus: <br>
-            <strong class="text-white">@students.itspku.ac.id</strong>, <strong class="text-white">@itspku.ac.id</strong>, atau <strong class="text-white">@student.umpku.ac.id</strong>
+          <span class="font-heading font-bold text-xl text-white tracking-tight">Aksara Kampus</span>
+        </NuxtLink>
+      </div>
+
+      <div class="relative z-10 space-y-6 max-w-md my-auto py-12">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-indigo-200 border border-white/15">
+          Registrasi Penulis Mahasiswa
+        </span>
+        <h2 class="font-heading text-3xl xl:text-4xl font-extrabold text-white leading-tight">
+          Suarakan Gagasan, Tumbuhkan Tradisi Literasi.
+        </h2>
+        <p class="text-sm text-indigo-200/80 leading-relaxed">
+          Pendaftaran dibuka eksklusif bagi mahasiswa civitas akademika untuk memastikan karya yang diterbitkan dapat dipertanggungjawabkan keasliannya.
+        </p>
+
+        <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-xs space-y-2 text-indigo-200">
+          <p class="font-semibold text-white">Domain Email Resmi yang Diterima:</p>
+          <div class="space-y-1 text-[11px]">
+            <p>• @students.itspku.ac.id</p>
+            <p>• @student.umpku.ac.id</p>
+            <p>• @itspku.ac.id / @umpku.ac.id</p>
           </div>
         </div>
+      </div>
 
-        <div v-if="errorMsg" class="mb-4 p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
-          {{ errorMsg }}
+      <div class="relative z-10 text-xs text-indigo-300/60">
+        © {{ new Date().getFullYear() }} Aksara Kampus • Komunitas Sastra Mahasiswa
+      </div>
+    </div>
+
+    <!-- Panel Kanan: Form Registrasi -->
+    <div class="w-full lg:w-1/2 bg-canvas flex items-center justify-center p-6 sm:p-12 lg:p-16">
+      <div class="card w-full max-w-md p-8 sm:p-10 shadow-lift">
+        <div class="mb-6">
+          <h1 class="font-heading text-2xl font-bold text-ink">Daftar Akun Penulis</h1>
+          <p class="text-xs text-ink-muted mt-1">Gunakan email resmi kampus Anda untuk mulai berkarya.</p>
+        </div>
+
+        <!-- Alert Error -->
+        <div v-if="errorMessage" class="mb-5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-start gap-2" role="alert">
+          <svg class="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ errorMessage }}</span>
         </div>
 
         <form @submit.prevent="handleRegister" class="space-y-4">
           <div>
-            <label class="label">Nama Lengkap</label>
+            <label for="reg-name" class="label">Nama Lengkap <span class="text-rose-500">*</span></label>
             <input
-              v-model="form.name"
+              id="reg-name"
+              v-model="name"
               type="text"
-              class="input"
-              placeholder="Sekar Ayu Kinanti"
               required
+              placeholder="Contoh: Sekar Ayu Kinanti"
+              class="input"
             />
           </div>
 
           <div>
-            <label class="label">Username</label>
-            <div class="relative">
-              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ochre-400 font-mono text-sm">@</span>
-              <input
-                v-model="form.username"
-                type="text"
-                class="input pl-8 font-mono text-sm"
-                placeholder="sekar_kinanti"
-                pattern="^[a-zA-Z0-9_-]+$"
-                minlength="3"
-                maxlength="30"
-                required
-              />
-            </div>
-            <p class="text-[11px] text-parchment-500 mt-1">Hanya huruf, angka, strip, atau garis bawah (min. 3 karakter)</p>
+            <label for="reg-username" class="label">Username <span class="text-rose-500">*</span></label>
+            <input
+              id="reg-username"
+              v-model="username"
+              type="text"
+              required
+              placeholder="Contoh: sekarayu"
+              class="input"
+            />
           </div>
 
           <div>
-            <label class="label">Email Resmi Kampus</label>
+            <label for="reg-email" class="label">Email Resmi Kampus <span class="text-rose-500">*</span></label>
             <input
-              v-model="form.email"
+              id="reg-email"
+              v-model="email"
               type="email"
-              class="input"
-              placeholder="nim@students.itspku.ac.id"
               required
+              placeholder="nim@students.itspku.ac.id"
+              class="input"
             />
-            <p class="text-[11px] text-parchment-500 mt-1">Gunakan format @students.itspku.ac.id atau @student.umpku.ac.id</p>
+            <p class="text-[11px] text-ink-subtle mt-1">Wajib menggunakan domain kampus yang sah.</p>
           </div>
 
           <div>
-            <label class="label">Kata Sandi (Minimal 6 Karakter)</label>
+            <label for="reg-password" class="label">Kata Sandi (Minimal 6 Karakter) <span class="text-rose-500">*</span></label>
             <input
-              v-model="form.password"
+              id="reg-password"
+              v-model="password"
               type="password"
-              class="input"
-              placeholder="••••••••"
-              minlength="6"
               required
+              minlength="6"
+              placeholder="••••••••"
+              class="input"
             />
           </div>
 
           <button
             type="submit"
-            class="btn-primary w-full py-2.5 mt-2"
-            :disabled="loading"
+            :disabled="isLoading"
+            class="btn-primary w-full py-3 text-sm font-semibold mt-2 shadow"
           >
-            {{ loading ? 'Mendaftar...' : 'Daftar Akun Penulis' }}
+            <span v-if="isLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+            Daftar Akun Mahasiswa
           </button>
         </form>
 
-        <p class="text-center mt-6 text-xs text-slate-400">
-          Sudah punya akun?
-          <NuxtLink to="/login" class="text-amber-400 hover:underline font-semibold ml-1">Masuk di sini</NuxtLink>
-        </p>
+        <div class="mt-8 pt-6 border-t border-card-border text-center text-xs text-ink-muted">
+          Sudah memiliki akun?
+          <NuxtLink to="/login" class="text-indigo-brand font-semibold hover:underline ml-1">
+            Masuk di sini
+          </NuxtLink>
+        </div>
       </div>
-
-      <p class="text-center mt-4 text-xs text-slate-500">
-        <NuxtLink to="/" class="hover:text-amber-400 transition">← Kembali ke portal publik</NuxtLink>
-      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'blank' })
+definePageMeta({
+  middleware: ['guest'],
+})
 
 const auth = useAuthStore()
-const router = useRouter()
-
-const form = reactive({ name: '', username: '', email: '', password: '' })
-const loading = ref(false)
-const errorMsg = ref('')
+const name = ref('')
+const username = ref('')
+const email = ref('')
+const password = ref('')
+const isLoading = ref(false)
+const errorMessage = ref('')
 
 async function handleRegister() {
-  loading.value = true
-  errorMsg.value = ''
+  if (isLoading.value) return
+  isLoading.value = true
+  errorMessage.value = ''
 
   try {
-    await auth.register(form.name, form.username, form.email, form.password)
-    router.push('/kirim')
+    await auth.register(name.value, username.value, email.value, password.value)
+    navigateTo('/mahasiswa')
   } catch (err: any) {
-    if (err?.data?.errors) {
-      const firstKey = Object.keys(err.data.errors)[0]
-      errorMsg.value = err.data.errors[firstKey][0]
-    } else {
-      errorMsg.value = err?.data?.message ?? 'Gagal mendaftar. Silakan coba lagi.'
-    }
+    errorMessage.value = err.data?.message || 'Registrasi gagal. Pastikan format email kampus benar.'
   } finally {
-    loading.value = false
+    isLoading.value = false
   }
 }
 </script>
-

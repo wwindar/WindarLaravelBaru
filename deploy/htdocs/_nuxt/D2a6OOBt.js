@@ -1,0 +1,1 @@
+import{c as e,o as t}from"./CBQGvEIJ.js";import{t as n}from"#entry";var r=t(t=>{let r=n();if(r.restoreSession(),t.path!==`/admin/login`&&!r.isLoggedIn)return e(`/admin/login`)});export{r as default};

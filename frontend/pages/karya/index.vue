@@ -1,104 +1,274 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-8">
-    <div>
-      <h1 class="text-3xl font-bold text-white">Karya Terbit</h1>
-      <p class="text-slate-400 text-sm mt-1">Puisi, cerpen mini, dan esai pilihan redaksi</p>
-    </div>
-
-    <!-- Filter -->
-    <div class="flex flex-col sm:flex-row gap-3">
-      <input v-model="filter.search" @input="debouncedFetch" type="text" placeholder="Cari karya atau nama penulis..." class="input flex-1" />
-      <select v-model="filter.jenis" @change="fetchKarya" class="input sm:w-40">
-        <option value="">Semua Jenis</option>
-        <option value="puisi">Puisi</option>
-        <option value="cerpen">Cerpen</option>
-        <option value="esai">Esai</option>
-      </select>
-    </div>
-
-    <!-- Loading -->
-    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div v-for="i in 4" :key="i" class="card p-6 animate-pulse space-y-3">
-        <div class="h-4 bg-slate-800 rounded w-1/4"></div>
-        <div class="h-6 bg-slate-800 rounded w-3/4"></div>
-        <div class="h-20 bg-slate-800 rounded w-full"></div>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Perpustakaan Digital</span>
+        <h1 class="font-heading text-3xl font-extrabold text-ink">Karya Sastra Terbit</h1>
+        <p class="text-xs sm:text-sm text-ink-muted mt-1">Jelajahi puisi, cerpen, esai, dan artikel pemikiran mahasiswa.</p>
+      </div>
+      <div v-if="auth.isMahasiswa">
+        <NuxtLink to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2.5">
+          + Tulis Karya Baru
+        </NuxtLink>
       </div>
     </div>
 
-    <div v-else-if="karyaList.length === 0" class="card py-16 text-center text-slate-500">
-      Karya sastra tidak ditemukan.
-    </div>
-
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <NuxtLink
-        v-for="k in karyaList"
-        :key="k.id"
-        :to="`/karya/${k.slug}`"
-        class="card p-6 hover:border-amber-500/20 hover:bg-slate-800/40 transition group flex flex-col justify-between"
-      >
+    <!-- Filter & Pencarian Bar -->
+    <div class="card p-5 space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Input Search -->
         <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="badge-purple capitalize">{{ k.jenis }}</span>
-            <span class="text-xs text-amber-500/60 font-mono">{{ k.nomor_kiriman }}</span>
+          <label for="filter-search" class="label">Pencarian Kata Kunci</label>
+          <div class="relative">
+            <input
+              id="filter-search"
+              v-model="filters.search"
+              type="search"
+              placeholder="Judul atau kata kunci..."
+              class="input pr-8"
+              @keydown.enter="applyFilters"
+            />
+            <span class="absolute right-3 top-2.5 text-ink-subtle pointer-events-none">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
           </div>
-          <h2 class="text-xl font-bold text-white group-hover:text-amber-400 transition leading-snug">
-            {{ k.judul }}
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">Oleh {{ k.nama_penulis }}</p>
-          <p class="text-sm text-slate-400 mt-4 leading-relaxed line-clamp-4 font-mono">
-            {{ k.isi }}
-          </p>
         </div>
-        <div class="pt-4 border-t border-slate-800 mt-6 flex justify-between items-center text-xs text-slate-500">
-          <span>Baca selengkapnya →</span>
+
+        <!-- Filter Jenis -->
+        <div>
+          <label for="filter-jenis" class="label">Jenis Karya</label>
+          <select id="filter-jenis" v-model="filters.jenis" class="input" @change="applyFilters">
+            <option value="">Semua Jenis</option>
+            <option value="puisi">Puisi</option>
+            <option value="cerpen">Cerita Pendek (Cerpen)</option>
+            <option value="esai">Esai</option>
+            <option value="artikel">Artikel</option>
+          </select>
         </div>
-      </NuxtLink>
+
+        <!-- Filter Kategori -->
+        <div>
+          <label for="filter-kategori" class="label">Kategori Rubrik</label>
+          <select id="filter-kategori" v-model="filters.kategori" class="input" @change="applyFilters">
+            <option value="">Semua Kategori</option>
+            <option v-for="cat in kategoriList" :key="cat.id" :value="cat.slug">
+              {{ cat.nama }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Filter Penulis -->
+        <div>
+          <label for="filter-penulis" class="label">Username Penulis</label>
+          <input
+            id="filter-penulis"
+            v-model="filters.penulis"
+            type="text"
+            placeholder="Contoh: andisaputra"
+            class="input"
+            @keydown.enter="applyFilters"
+          />
+        </div>
+      </div>
+
+      <!-- Action filter buttons -->
+      <div class="flex items-center justify-between pt-3 border-t border-card-border text-xs">
+        <span class="text-ink-muted">
+          Menampilkan <strong class="text-ink">{{ tulisanList.length }}</strong> dari <strong class="text-ink">{{ totalItems }}</strong> karya
+        </span>
+        <div class="flex items-center gap-2">
+          <button type="button" @click="resetFilters" class="btn-ghost text-xs px-3 py-1.5">
+            Reset Filter
+          </button>
+          <button type="button" @click="applyFilters" class="btn-primary text-xs px-4 py-1.5">
+            Terapkan
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Pagination -->
-    <div v-if="meta.last_page > 1" class="flex items-center justify-center gap-2">
-      <button @click="changePage(meta.current_page - 1)" :disabled="meta.current_page <= 1" class="btn-ghost px-3 py-2 disabled:opacity-30">← Sebelumnya</button>
-      <span class="text-sm text-slate-500">{{ meta.current_page }} / {{ meta.last_page }}</span>
-      <button @click="changePage(meta.current_page + 1)" :disabled="meta.current_page >= meta.last_page" class="btn-ghost px-3 py-2 disabled:opacity-30">Berikutnya →</button>
-    </div>
+    <!-- Data State: 4 Kondisi (Memuat, Gagal, Kosong, Berhasil) -->
+    <DataState
+      :loading="isLoading"
+      :error="errorMessage"
+      :empty="tulisanList.length === 0"
+      empty-title="Karya tidak ditemukan"
+      empty-description="Tidak ada karya sastra yang cocok dengan filter atau kata kunci yang Anda masukkan."
+      @retry="fetchKarya"
+    >
+      <template #empty-action>
+        <button type="button" @click="resetFilters" class="btn-secondary text-xs px-4 py-2">
+          Hapus Semua Filter
+        </button>
+      </template>
+
+      <!-- Grid Karya -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article
+          v-for="item in tulisanList"
+          :key="item.id"
+          class="card card-hover p-6 flex flex-col justify-between"
+        >
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-soft text-indigo-brand capitalize">
+                {{ item.jenis_label || item.jenis }}
+              </span>
+              <span class="text-[11px] text-ink-subtle">
+                {{ formatDate(item.diterbitkan_pada) }}
+              </span>
+            </div>
+
+            <NuxtLink :to="`/karya/${item.slug}`" class="block group">
+              <h2 class="font-heading text-lg font-bold text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
+                {{ item.judul }}
+              </h2>
+            </NuxtLink>
+
+            <p class="text-xs text-ink-muted mt-2.5 line-clamp-3 leading-relaxed">
+              {{ item.ringkasan || 'Klik tautan untuk membaca naskah selengkapnya.' }}
+            </p>
+          </div>
+
+          <div class="pt-4 mt-5 border-t border-card-border flex items-center justify-between text-xs text-ink-muted">
+            <span class="font-medium text-ink truncate">
+              Oleh {{ item.penulis?.name }}
+            </span>
+            <NuxtLink :to="`/karya/${item.slug}`" class="text-indigo-brand hover:underline font-semibold shrink-0">
+              Baca naskah →
+            </NuxtLink>
+          </div>
+        </article>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 pt-8">
+        <button
+          type="button"
+          :disabled="currentPage <= 1"
+          @click="changePage(currentPage - 1)"
+          class="btn-secondary text-xs px-3 py-1.5"
+        >
+          ← Sebelumnya
+        </button>
+        <span class="text-xs text-ink-muted px-2">
+          Halaman <strong>{{ currentPage }}</strong> dari <strong>{{ totalPages }}</strong>
+        </span>
+        <button
+          type="button"
+          :disabled="currentPage >= totalPages"
+          @click="changePage(currentPage + 1)"
+          class="btn-secondary text-xs px-3 py-1.5"
+        >
+          Berikutnya →
+        </button>
+      </div>
+    </DataState>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase as string
 
-const { request } = useApi()
-const filter = reactive({ search: '', jenis: '' })
-const karyaList = ref<any[]>([])
-const meta = ref<any>({ current_page: 1, last_page: 1 })
-const loading = ref(false)
+const isLoading = ref(true)
+const errorMessage = ref('')
+const tulisanList = ref<any[]>([])
+const kategoriList = ref<any[]>([])
 
-async function fetchKarya(page = 1) {
-  loading.value = true
+const currentPage = ref(1)
+const totalPages = ref(1)
+const totalItems = ref(0)
+
+const filters = reactive({
+  search: (route.query.search as string) || '',
+  jenis: (route.query.jenis as string) || '',
+  kategori: (route.query.kategori as string) || '',
+  penulis: (route.query.penulis as string) || '',
+})
+
+async function fetchKategori() {
   try {
-    const params = new URLSearchParams({ page: String(page), per_page: '8' })
-    if (filter.search) params.append('search', filter.search)
-    if (filter.jenis) params.append('jenis', filter.jenis)
-    const res = await request<{ data: any[]; meta: any }>(`/karya?${params}`)
-    karyaList.value = res.data
-    meta.value = res.meta
-  } catch {
-    karyaList.value = []
+    const res = await $fetch<any>(`${apiBase}/kategori`)
+    kategoriList.value = res.data || []
+  } catch {}
+}
+
+async function fetchKarya() {
+  isLoading.value = true
+  errorMessage.value = ''
+
+  const params: Record<string, any> = {
+    page: currentPage.value,
+    per_page: 9,
+  }
+
+  if (filters.search) params.search = filters.search
+  if (filters.jenis) params.jenis = filters.jenis
+  if (filters.kategori) params.kategori = filters.kategori
+  if (filters.penulis) params.penulis = filters.penulis
+
+  try {
+    const res = await $fetch<any>(`${apiBase}/tulisan`, { params })
+    tulisanList.value = res.data || []
+    currentPage.value = res.meta?.current_page || 1
+    totalPages.value = res.meta?.last_page || 1
+    totalItems.value = res.meta?.total || tulisanList.value.length
+  } catch (err: any) {
+    errorMessage.value = err.data?.message || 'Gagal memuat katalog karya sastra. Coba periksa koneksi atau backend.'
   } finally {
-    loading.value = false
+    isLoading.value = false
   }
 }
 
-let timer: ReturnType<typeof setTimeout>
-const debouncedFetch = () => {
-  clearTimeout(timer)
-  timer = setTimeout(() => fetchKarya(), 350)
+function applyFilters() {
+  currentPage.value = 1
+  router.push({
+    path: '/karya',
+    query: {
+      ...(filters.search ? { search: filters.search } : {}),
+      ...(filters.jenis ? { jenis: filters.jenis } : {}),
+      ...(filters.kategori ? { kategori: filters.kategori } : {}),
+      ...(filters.penulis ? { penulis: filters.penulis } : {}),
+    },
+  })
+  fetchKarya()
+}
+
+function resetFilters() {
+  filters.search = ''
+  filters.jenis = ''
+  filters.kategori = ''
+  filters.penulis = ''
+  currentPage.value = 1
+  router.push({ path: '/karya' })
+  fetchKarya()
 }
 
 function changePage(page: number) {
-  fetchKarya(page)
+  currentPage.value = page
+  fetchKarya()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-onMounted(() => fetchKarya())
-</script>
+function formatDate(iso: string) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return d.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
 
+onMounted(() => {
+  fetchKategori()
+  fetchKarya()
+})
+</script>

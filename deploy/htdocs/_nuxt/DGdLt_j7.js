@@ -1,0 +1,1 @@
+import{c as e,u as t}from"./CBQGvEIJ.js";import{F as n,f as r,l as i,y as a}from"./Ct1vF7ES.js";var o={class:`p-8 text-center`},s=a({__name:`[slug]`,setup(a){let s=t();return e(`/karya/${s.params.slug}`),(e,t)=>(n(),r(`div`,o,[...t[0]||=[i(`p`,{class:`text-xs text-ink-muted`},`Mengalihkan ke naskah...`,-1)]]))}});export{s as default};

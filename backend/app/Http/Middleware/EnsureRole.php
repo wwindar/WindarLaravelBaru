@@ -17,7 +17,10 @@ class EnsureRole
     {
         $user = $request->user();
 
-        if (! $user || ! in_array($user->role, $roles, strict: true)) {
+        // Normalkan: 'admin' dianggap setara dengan 'dosen'
+        $effectiveRole = ($user && $user->role === 'admin') ? 'dosen' : ($user?->role ?? '');
+
+        if (! $user || ! in_array($effectiveRole, $roles, strict: true)) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda tidak memiliki hak untuk melakukan tindakan ini.',
             ], 403);

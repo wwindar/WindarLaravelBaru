@@ -1,0 +1,15 @@
+Options -Indexes
+RewriteEngine On
+
+# Redirect ke HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Handle Authorization header (InfinityFree sering strip header ini)
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Front controller Laravel
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

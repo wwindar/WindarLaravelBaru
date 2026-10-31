@@ -1,0 +1,1 @@
+import{F as e,f as t,y as n,z as r}from"./Ct1vF7ES.js";var i={class:`min-h-screen flex flex-col bg-canvas text-ink font-sans`},a=n({__name:`admin`,setup(n){return(n,a)=>(e(),t(`div`,i,[r(n.$slots,`default`)]))}});export{a as default};

@@ -1,0 +1,22 @@
+﻿<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Blokir akses langsung ke folder internal backend-core
+  RewriteRule ^backend-core/.*$ - [F,L]
+
+  # 2. Arahkan seluruh rute /api/* ke public/index.php Laravel
+  RewriteCond %{REQUEST_URI} ^/api(/.*)?$
+  RewriteRule ^api(/.*)?$ backend-core/public/index.php [L,QSA]
+
+  # 3. Nuxt SPA Fallback untuk semua rute frontend
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^.*$ index.html [L]
+</IfModule>
+
+# Proteksi file sensitif
+<FilesMatch "(^\.env|\.git|\.lock|composer\.json)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
