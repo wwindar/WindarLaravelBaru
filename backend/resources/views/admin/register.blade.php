@@ -10,31 +10,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --color-bg: #F8F3FB;
+            --color-bg: #FAF8F5;
             --color-surface: #FFFFFF;
-            --color-surface-subtle: #F3EBF7;
-            --color-border: #EADBEE;
-            --color-text: #261C33;
-            --color-text-muted: #7E7192;
-            --color-accent: #D946EF;
-            --color-accent-gradient: linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%);
-            --color-accent-soft: #FCE7F6;
-            --card-shadow: 0 16px 40px -10px rgba(186, 104, 200, 0.15);
+            --color-surface-subtle: #F5EFE8;
+            --color-border: #EAE4DC;
+            --color-text: #1C1917;
+            --color-text-muted: #78716C;
+            --color-accent: #EA580C;
+            --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+            --color-accent-soft: #FFF1EB;
+            --card-shadow: 0 16px 40px -10px rgba(234, 88, 12, 0.12);
             --font-heading: 'Sora', sans-serif;
             --font-body: 'DM Sans', sans-serif;
         }
 
         @media (prefers-color-scheme: dark) {
             :root:not([data-theme="light"]) {
-                --color-bg: #171426;
-                --color-surface: #221E38;
-                --color-surface-subtle: #2B2647;
-                --color-border: #352E54;
-                --color-text: #F4F0FA;
-                --color-text-muted: #A59BBF;
-                --color-accent: #E84A96;
-                --color-accent-gradient: linear-gradient(135deg, #FF65A5 0%, #B847FA 100%);
-                --color-accent-soft: rgba(232, 74, 150, 0.16);
+                --color-bg: #181513;
+                --color-surface: #24201D;
+                --color-surface-subtle: #2E2824;
+                --color-border: #3A342F;
+                --color-text: #FAF8F5;
+                --color-text-muted: #A8A29E;
+                --color-accent: #F97316;
+                --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+                --color-accent-soft: rgba(249, 115, 22, 0.16);
                 --card-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
             }
         }
@@ -63,7 +63,7 @@
             border: none;
             border-radius: 14px;
             font-weight: 600;
-            box-shadow: 0 6px 18px rgba(217, 70, 239, 0.3);
+            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.3);
             transition: all 0.2s ease;
         }
         .btn-gradient:hover {
@@ -180,8 +180,9 @@
 
         </div>
 
-        <p class="text-center mt-5 text-xs" style="color: var(--color-text-muted);">
-            <a href="{{ url('/') }}" class="hover:underline transition">&larr; Kembali ke Halaman Utama Backend</a>
+        <p class="text-center mt-5 text-xs space-y-1" style="color: var(--color-text-muted);">
+            <a href="{{ url('/') }}" class="hover:underline transition block">&larr; Kembali ke Halaman Utama Backend</a>
+            <span class="block text-[11px] opacity-80">&copy; 2026 <strong style="color: var(--color-accent);">Windar Shineta</strong> &bull; Aksara Kampus</span>
         </p>
     </div>
 

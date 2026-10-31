@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-[calc(100vh-4rem)] flex items-stretch">
-    <!-- Panel Kiri: Slate-Violet Gradient (uTask Dark Aesthetic) -->
-    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#231A3B] via-[#1B162E] to-[#120F20] text-white p-12 lg:p-16 flex-col justify-between relative overflow-hidden border-r border-[#352E54]/50">
+    <!-- Panel Kiri: Warm Charcoal / UMPKU Dark Aesthetic -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#241C15] via-[#1C1610] to-[#120E0A] text-white p-12 lg:p-16 flex-col justify-between relative overflow-hidden border-r border-[#453629]/50">
       <!-- Background subtle ambient glow -->
-      <div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-fuchsia-600/20 blur-3xl pointer-events-none"></div>
-      <div class="absolute -left-12 -top-12 w-80 h-80 rounded-full bg-pink-500/15 blur-2xl pointer-events-none"></div>
+      <div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-orange-600/20 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -top-12 w-80 h-80 rounded-full bg-amber-500/15 blur-2xl pointer-events-none"></div>
 
       <div class="relative z-10">
         <NuxtLink to="/" class="inline-flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white flex items-center justify-center font-heading font-bold text-base shadow-lg shadow-fuchsia-900/30">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FB923C] to-[#EA580C] text-white flex items-center justify-center font-heading font-bold text-base shadow-lg shadow-orange-950/40">
             AK
           </div>
           <span class="font-heading font-bold text-xl text-white tracking-tight">Aksara Kampus</span>
@@ -16,17 +16,17 @@
       </div>
 
       <div class="relative z-10 space-y-6 max-w-md my-auto py-12">
-        <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-pink-200 border border-white/15 backdrop-blur-sm">
+        <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-orange-200 border border-white/15 backdrop-blur-sm">
           Registrasi Penulis Mahasiswa
         </span>
         <h2 class="font-heading text-3xl xl:text-4xl font-extrabold text-white leading-tight">
           Suarakan Gagasan, Tumbuhkan Tradisi Literasi.
         </h2>
-        <p class="text-sm text-fuchsia-100/80 leading-relaxed">
+        <p class="text-sm text-orange-100/80 leading-relaxed">
           Pendaftaran dibuka eksklusif bagi mahasiswa civitas akademika untuk memastikan karya yang diterbitkan dapat dipertanggungjawabkan keasliannya.
         </p>
 
-        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs space-y-2 text-fuchsia-100/90 backdrop-blur-sm">
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs space-y-2 text-orange-100/90 backdrop-blur-sm">
           <p class="font-semibold text-white flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             Domain Email Resmi yang Diterima:
@@ -39,8 +39,8 @@
         </div>
       </div>
 
-      <div class="relative z-10 text-xs text-fuchsia-200/50">
-        © {{ new Date().getFullYear() }} Aksara Kampus • Komunitas Sastra Mahasiswa
+      <div class="relative z-10 text-xs text-orange-200/50">
+        © 2026 Aksara Kampus • Windar Shineta
       </div>
     </div>
 

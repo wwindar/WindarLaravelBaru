@@ -1,16 +1,23 @@
 <template>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-      <div>
-        <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Perpustakaan Digital</span>
-        <h1 class="font-heading text-3xl font-extrabold text-ink">Karya Sastra Terbit</h1>
-        <p class="text-xs sm:text-sm text-ink-muted mt-1">Jelajahi puisi, cerpen, esai, dan artikel pemikiran mahasiswa.</p>
-      </div>
-      <div v-if="auth.isMahasiswa">
-        <NuxtLink to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2.5">
-          + Tulis Karya Baru
-        </NuxtLink>
+    <!-- Header dengan Banner -->
+    <div class="relative overflow-hidden rounded-2xl border border-card-border shadow-card">
+      <img
+        src="/images/karya-banner.png"
+        alt="Karya Sastra Terbit"
+        class="w-full h-44 sm:h-56 object-cover object-center opacity-80 dark:opacity-50"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-card/95 via-card/70 to-transparent flex flex-col sm:flex-row sm:items-end justify-between gap-4 p-6 sm:p-8">
+        <div>
+          <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Perpustakaan Digital</span>
+          <h1 class="font-heading text-3xl font-extrabold text-ink">Karya Sastra Terbit</h1>
+          <p class="text-xs sm:text-sm text-ink-muted mt-1">Jelajahi puisi, cerpen, esai, dan artikel pemikiran mahasiswa.</p>
+        </div>
+        <div v-if="auth.isMahasiswa" class="shrink-0">
+          <NuxtLink to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2.5">
+            + Tulis Karya Baru
+          </NuxtLink>
+        </div>
       </div>
     </div>
 

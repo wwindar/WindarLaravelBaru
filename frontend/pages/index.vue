@@ -1,52 +1,71 @@
 <template>
   <div class="space-y-16 sm:space-y-24 py-8 sm:py-12">
-    <!-- 1. Hero Section (Tanpa Foto) -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-soft text-indigo-brand text-xs font-semibold mb-6">
-        <span class="w-2 h-2 rounded-full bg-indigo-brand animate-pulse"></span>
-        Platform Literasi & Sastra Digital Kampus
-      </div>
+    <!-- 1. Hero Section dengan Gambar Banner -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div
+        class="relative overflow-hidden rounded-3xl border border-card-border p-8 sm:p-14 lg:p-16 text-center shadow-card"
+        style="
+          background-image: url('/hero-perpustakaan-umpku.png');
+          background-size: cover;
+          background-position: center bottom;
+          background-repeat: no-repeat;
+        "
+      >
+        <!-- Overlay radial tipis hanya di belakang blok teks tengah, sisi kiri-kanan tetap terlihat -->
+        <div
+          class="absolute inset-0 pointer-events-none"
+          style="background: radial-gradient(ellipse 65% 100% at 50% 50%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.30) 45%, transparent 75%);"
+        ></div>
 
-      <h1 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight max-w-4xl mx-auto leading-tight">
-        Menghidupkan Kata, <br class="hidden sm:inline" />
-        <span class="text-indigo-brand">Merawat Nalar Sastra</span> Kampus
-      </h1>
+        <!-- Konten Hero: TETAP LENGKAP & TIDAK DIUBAH-UBAH -->
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-soft/90 backdrop-blur-xs text-indigo-brand text-xs font-semibold mb-6 border border-indigo-brand/20">
+            <span class="w-2 h-2 rounded-full bg-indigo-brand animate-pulse"></span>
+            Platform Literasi & Sastra Digital Kampus
+          </div>
 
-      <p class="mt-5 text-base sm:text-lg text-ink-muted max-w-2xl mx-auto leading-relaxed">
-        Ruang terbuka bagi mahasiswa untuk menerbitkan puisi, cerpen, esai kritis, dan artikel pemikiran yang dikurasi langsung oleh dewan dosen editor.
-      </p>
+          <h1 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight max-w-4xl mx-auto leading-tight">
+            Menghidupkan Kata, <br class="hidden sm:inline" />
+            <span class="text-indigo-brand">Merawat Nalar Sastra</span> Kampus
+          </h1>
 
-      <!-- Kolom Pencarian Cepat di Hero -->
-      <form @submit.prevent="handleHeroSearch" class="mt-8 max-w-xl mx-auto flex items-center gap-2 p-1.5 bg-card border border-card-border rounded-2xl shadow-card focus-within:border-indigo-brand focus-within:ring-2 focus-within:ring-indigo-soft">
-        <label for="hero-search" class="sr-only">Cari judul atau isi karya sastra</label>
-        <div class="pl-3 text-ink-subtle">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <p class="mt-5 text-base sm:text-lg text-ink-muted max-w-2xl mx-auto leading-relaxed">
+            Ruang terbuka bagi mahasiswa untuk menerbitkan puisi, cerpen, esai kritis, dan artikel pemikiran yang dikurasi langsung oleh dewan dosen editor.
+          </p>
+
+          <!-- Kolom Pencarian Cepat di Hero -->
+          <form @submit.prevent="handleHeroSearch" class="mt-8 max-w-xl mx-auto flex items-center gap-2 p-1.5 bg-white border border-card-border rounded-2xl shadow-card focus-within:border-indigo-brand focus-within:ring-2 focus-within:ring-indigo-soft">
+            <label for="hero-search" class="sr-only">Cari judul atau isi karya sastra</label>
+            <div class="pl-3 text-ink-subtle">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              id="hero-search"
+              v-model="searchQuery"
+              type="search"
+              placeholder="Cari judul puisi, cerpen, esai, atau penulis..."
+              class="w-full py-2.5 px-2 text-sm text-ink bg-transparent focus:outline-none placeholder-ink-subtle"
+            />
+            <button type="submit" class="btn-primary text-xs px-5 py-2.5 shrink-0">
+              Cari
+            </button>
+          </form>
+
+          <!-- CTA Links -->
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2 shadow-xs">
+              Jelajahi Seluruh Karya
+            </NuxtLink>
+            <NuxtLink v-if="!auth.isLoggedIn" to="/register" class="btn-ghost text-xs px-4 py-2 text-indigo-brand hover:bg-indigo-soft font-semibold">
+              Daftar Sebagai Penulis →
+            </NuxtLink>
+            <NuxtLink v-else-if="auth.isMahasiswa" to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2">
+              + Mulai Menulis Sekarang
+            </NuxtLink>
+          </div>
         </div>
-        <input
-          id="hero-search"
-          v-model="searchQuery"
-          type="search"
-          placeholder="Cari judul puisi, cerpen, esai, atau penulis..."
-          class="w-full py-2.5 px-2 text-sm text-ink bg-transparent focus:outline-none placeholder-ink-subtle"
-        />
-        <button type="submit" class="btn-primary text-xs px-5 py-2.5 shrink-0">
-          Cari
-        </button>
-      </form>
-
-      <!-- CTA Links -->
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2">
-          Jelajahi Seluruh Karya
-        </NuxtLink>
-        <NuxtLink v-if="!auth.isLoggedIn" to="/register" class="btn-ghost text-xs px-4 py-2 text-indigo-brand hover:bg-indigo-soft font-semibold">
-          Daftar Sebagai Penulis →
-        </NuxtLink>
-        <NuxtLink v-else-if="auth.isMahasiswa" to="/mahasiswa/tulisan/baru" class="btn-primary text-xs px-4 py-2">
-          + Mulai Menulis Sekarang
-        </NuxtLink>
       </div>
     </section>
 
@@ -109,15 +128,23 @@
 
     <!-- 3. Tulisan Baru Terbit (Card Grid dengan 4 Kondisi State) -->
     <section class="max-w-6xl mx-auto px-4 sm:px-6">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-        <div>
-          <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Katalog Publik</span>
-          <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Tulisan Baru Terbit</h2>
-          <p class="text-xs sm:text-sm text-ink-muted mt-1">Karya pilihan mahasiswa yang telah lolos kurasi kurator redaksi.</p>
+      <!-- Banner Karya Sastra -->
+      <div class="relative overflow-hidden rounded-2xl mb-8 border border-card-border shadow-card">
+        <img
+          src="/images/karya-banner.png"
+          alt="Koleksi Karya Sastra Kampus"
+          class="w-full h-40 sm:h-52 object-cover object-center opacity-80 dark:opacity-50"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-card/90 via-card/60 to-transparent flex flex-col sm:flex-row sm:items-end justify-between gap-4 p-6 sm:p-8">
+          <div>
+            <span class="text-xs font-bold text-indigo-brand uppercase tracking-wider block mb-1">Katalog Publik</span>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-ink">Tulisan Baru Terbit</h2>
+            <p class="text-xs sm:text-sm text-ink-muted mt-1">Karya pilihan mahasiswa yang telah lolos kurasi kurator redaksi.</p>
+          </div>
+          <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2 self-start sm:self-auto shrink-0">
+            Lihat Semua ({{ totalKarya }}) →
+          </NuxtLink>
         </div>
-        <NuxtLink to="/karya" class="btn-secondary text-xs px-4 py-2 self-start sm:self-auto">
-          Lihat Semua ({{ totalKarya }}) →
-        </NuxtLink>
       </div>
 
       <DataState
@@ -257,7 +284,7 @@
 
           <!-- Peran 2: Dosen / Editor -->
           <div class="p-6 rounded-2xl bg-card border border-card-border shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-300 flex items-center justify-center font-bold text-sm mb-4">
+            <div class="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-600 dark:text-orange-300 flex items-center justify-center font-bold text-sm mb-4">
               02
             </div>
             <h3 class="font-heading text-base font-bold text-ink mb-2">Dosen / Editor</h3>

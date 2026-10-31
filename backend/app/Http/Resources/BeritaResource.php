@@ -17,6 +17,7 @@ class BeritaResource extends JsonResource
             'judul' => $this->judul,
             'slug' => $this->slug,
             'ringkasan' => $this->ringkasan,
+            'foto_url' => $this->foto ? asset('storage/' . $this->foto) : null,
             'isi' => $this->isi,
             'status' => $this->status,
             'diterbitkan_pada' => $this->diterbitkan_pada?->toIso8601String(),

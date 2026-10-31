@@ -37,7 +37,7 @@
         <div
           v-else
           class="w-24 h-24 rounded-3xl flex items-center justify-center font-heading font-extrabold text-3xl text-white shadow-lg select-none"
-          :style="{ background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' }"
+          :style="{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }"
         >
           {{ initials }}
         </div>
@@ -56,7 +56,7 @@
           type="button"
           @click="triggerFileInput"
           :disabled="isUploadingFoto"
-          class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white border-2 border-card flex items-center justify-center shadow hover:scale-110 active:scale-95 transition"
+          class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-br from-[#FB923C] to-[#EA580C] text-white border-2 border-card flex items-center justify-center shadow hover:scale-110 active:scale-95 transition"
           title="Ubah Foto Profil"
           aria-label="Ubah Foto Profil"
         >

@@ -3,77 +3,77 @@
 @tailwind utilities;
 
 :root {
-  /* Light Theme (uTask Inspired: Pastel Lilac & Vibrant Magenta) */
-  --bg-color: #F8F3FB;
+  /* Light Theme (UMPKU Campus Orange & Warm Clean Canvas) */
+  --bg-color: #FAF8F5;
   --surface-color: #FFFFFF;
-  --border-color: #EADBEE;
-  --text-color: #261C33;
-  --text-muted-color: #7E7192;
-  --accent-color: #D946EF;
+  --border-color: #EAE4DC;
+  --text-color: #1C1917;
+  --text-muted-color: #78716C;
+  --accent-color: #EA580C;
 
-  --bg-rgb: 248, 243, 251;          /* #F8F3FB */
+  --bg-rgb: 250, 248, 245;          /* #FAF8F5 */
   --surface-rgb: 255, 255, 255;      /* #FFFFFF */
-  --border-rgb: 234, 219, 238;       /* #EADBEE */
-  --text-rgb: 38, 28, 51;            /* #261C33 */
-  --text-muted-rgb: 126, 113, 146;   /* #7E7192 */
-  --text-subtle-rgb: 165, 155, 191;  /* #A59BBF */
-  --accent-rgb: 217, 70, 239;        /* #D946EF */
-  --accent-hover-rgb: 192, 38, 211;  /* #C026D3 */
-  --accent-soft-rgb: 252, 231, 246;   /* #FCE7F6 */
-  --accent-light-rgb: 253, 242, 250; /* #FDF2FA */
-  --brand-dark-rgb: 34, 26, 59;      /* #221A3B */
-  --accent-gradient: linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%);
-  --card-shadow: 0 4px 20px -2px rgba(186, 67, 246, 0.07), 0 2px 6px -1px rgba(38, 28, 51, 0.04);
+  --border-rgb: 234, 228, 220;       /* #EAE4DC */
+  --text-rgb: 28, 25, 23;            /* #1C1917 */
+  --text-muted-rgb: 120, 113, 108;   /* #78716C */
+  --text-subtle-rgb: 168, 162, 158;  /* #A8A29E */
+  --accent-rgb: 234, 88, 12;         /* #EA580C (UMPKU Vibrant Orange) */
+  --accent-hover-rgb: 194, 65, 12;   /* #C2410C */
+  --accent-soft-rgb: 255, 241, 235;  /* #FFF1EB */
+  --accent-light-rgb: 255, 247, 242; /* #FFF7F2 */
+  --brand-dark-rgb: 41, 37, 36;      /* #292524 */
+  --accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+  --card-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.08), 0 2px 6px -1px rgba(28, 25, 23, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* Dark Theme (uTask Inspired: Deep Slate Violet & Glowing Magenta) */
-    --bg-color: #171426;
-    --surface-color: #221E38;
-    --border-color: #352E54;
-    --text-color: #F4F0FA;
-    --text-muted-color: #A59BBF;
-    --accent-color: #E84A96;
+    /* Dark Theme (UMPKU Deep Charcoal & Glowing Campus Orange) */
+    --bg-color: #181513;
+    --surface-color: #24201D;
+    --border-color: #3A342F;
+    --text-color: #FAF8F5;
+    --text-muted-color: #A8A29E;
+    --accent-color: #F97316;
 
-    --bg-rgb: 23, 20, 38;             /* #171426 */
-    --surface-rgb: 34, 30, 56;        /* #221E38 */
-    --border-rgb: 53, 46, 84;         /* #352E54 */
-    --text-rgb: 244, 240, 250;        /* #F4F0FA */
-    --text-muted-rgb: 165, 155, 191;  /* #A59BBF */
-    --text-subtle-rgb: 122, 112, 148; /* #7A7094 */
-    --accent-rgb: 232, 74, 150;       /* #E84A96 */
-    --accent-hover-rgb: 208, 59, 131; /* #D03B83 */
-    --accent-soft-rgb: 46, 30, 58;    /* Dark magenta soft tint */
-    --accent-light-rgb: 38, 26, 50;
-    --brand-dark-rgb: 18, 15, 31;     /* #120F1F */
-    --accent-gradient: linear-gradient(135deg, #FF65A5 0%, #B847FA 100%);
-    --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+    --bg-rgb: 24, 21, 19;             /* #181513 */
+    --surface-rgb: 36, 32, 29;        /* #24201D */
+    --border-rgb: 58, 52, 47;         /* #3A342F */
+    --text-rgb: 250, 248, 245;        /* #FAF8F5 */
+    --text-muted-rgb: 168, 162, 158;  /* #A8A29E */
+    --text-subtle-rgb: 120, 113, 108; /* #78716C */
+    --accent-rgb: 249, 115, 22;       /* #F97316 */
+    --accent-hover-rgb: 234, 88, 12;  /* #EA580C */
+    --accent-soft-rgb: 54, 38, 28;    /* Dark warm orange soft tint */
+    --accent-light-rgb: 44, 31, 23;
+    --brand-dark-rgb: 20, 17, 15;     /* #14110F */
+    --accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+    --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
   }
 }
 
 :root[data-theme="dark"],
 .dark {
-  --bg-color: #171426;
-  --surface-color: #221E38;
-  --border-color: #352E54;
-  --text-color: #F4F0FA;
-  --text-muted-color: #A59BBF;
-  --accent-color: #E84A96;
+  --bg-color: #181513;
+  --surface-color: #24201D;
+  --border-color: #3A342F;
+  --text-color: #FAF8F5;
+  --text-muted-color: #A8A29E;
+  --accent-color: #F97316;
 
-  --bg-rgb: 23, 20, 38;
-  --surface-rgb: 34, 30, 56;
-  --border-rgb: 53, 46, 84;
-  --text-rgb: 244, 240, 250;
-  --text-muted-rgb: 165, 155, 191;
-  --text-subtle-rgb: 122, 112, 148;
-  --accent-rgb: 232, 74, 150;
-  --accent-hover-rgb: 208, 59, 131;
-  --accent-soft-rgb: 46, 30, 58;
-  --accent-light-rgb: 38, 26, 50;
-  --brand-dark-rgb: 18, 15, 31;
-  --accent-gradient: linear-gradient(135deg, #FF65A5 0%, #B847FA 100%);
-  --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+  --bg-rgb: 24, 21, 19;
+  --surface-rgb: 36, 32, 29;
+  --border-rgb: 58, 52, 47;
+  --text-rgb: 250, 248, 245;
+  --text-muted-rgb: 168, 162, 158;
+  --text-subtle-rgb: 120, 113, 108;
+  --accent-rgb: 249, 115, 22;
+  --accent-hover-rgb: 234, 88, 12;
+  --accent-soft-rgb: 54, 38, 28;
+  --accent-light-rgb: 44, 31, 23;
+  --brand-dark-rgb: 20, 17, 15;
+  --accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+  --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
@@ -114,7 +114,7 @@
   .btn-primary:hover {
     filter: brightness(1.08);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px -2px rgba(186, 67, 246, 0.35);
+    box-shadow: 0 4px 14px -2px rgba(234, 88, 12, 0.35);
   }
 
   .btn-primary:active {

@@ -141,8 +141,9 @@
 
     </main>
 
-    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
-        &copy; {{ date('Y') }} Aksara Kampus &bull; Komunitas Sastra Kampus &bull; S1 Informatika
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p>&copy; 2026 Aksara Kampus &bull; <strong class="text-amber-500">Windar Shineta</strong> &bull; Seluruh Hak Cipta Dilindungi</p>
+        <p class="text-[11px] text-slate-600">Platform Literasi & Publikasi Sastra Digital Kampus</p>
     </footer>
 
     <script>

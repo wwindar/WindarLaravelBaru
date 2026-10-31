@@ -43,8 +43,9 @@
 
           <div class="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-ink-muted">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-indigo-brand/10 text-indigo-brand font-bold flex items-center justify-center font-heading text-sm">
-                {{ karya.penulis?.name?.charAt(0) || 'P' }}
+              <div class="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center font-heading text-sm font-bold bg-indigo-brand/10 text-indigo-brand shrink-0 border border-card-border">
+                <img v-if="karya.penulis?.foto" :src="karya.penulis.foto" :alt="karya.penulis.name" class="w-full h-full object-cover" />
+                <span v-else>{{ karya.penulis?.name?.charAt(0) || 'P' }}</span>
               </div>
               <div>
                 <span class="font-bold text-ink block">{{ karya.penulis?.name }}</span>

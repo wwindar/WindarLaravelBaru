@@ -5,7 +5,7 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <!-- Brand / Logo -->
         <NuxtLink to="/" class="flex items-center gap-3 group focus-visible:rounded-xl">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] flex items-center justify-center font-heading font-bold text-white text-base shadow-md group-hover:scale-105 transition transform">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FB923C] to-[#EA580C] flex items-center justify-center font-heading font-bold text-white text-base shadow-md group-hover:scale-105 transition transform">
             AK
           </div>
           <div>
@@ -57,7 +57,7 @@
                 type="button"
                 @click="showProfilMenu = !showProfilMenu"
                 class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition overflow-hidden border border-card-border"
-                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}"
+                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' } : {}"
                 :title="auth.user?.name"
                 aria-haspopup="true"
                 :aria-expanded="showProfilMenu"
@@ -72,7 +72,7 @@
                 style="background-color: var(--surface-color);"
               >
                 <div class="px-4 py-3 border-b border-card-border flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}">
+                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' } : {}">
                     <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
                     <span v-else>{{ navInitials }}</span>
                   </div>
@@ -148,7 +148,7 @@
                 type="button"
                 @click="showProfilMenu = !showProfilMenu"
                 class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition overflow-hidden border border-card-border"
-                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}"
+                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' } : {}"
                 :title="auth.user?.name"
               >
                 <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
@@ -161,13 +161,13 @@
                 style="background-color: var(--surface-color);"
               >
                 <div class="px-4 py-3 border-b border-card-border flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}">
+                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' } : {}">
                     <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
                     <span v-else>{{ navInitials }}</span>
                   </div>
                   <div class="min-w-0 flex-1">
                     <p class="text-xs font-bold text-ink truncate">{{ auth.user?.name }}</p>
-                    <p class="text-[11px] text-fuchsia-600 dark:text-fuchsia-400 font-semibold truncate">{{ auth.user?.role === 'admin' ? 'Admin Redaksi' : 'Dosen Editor' }}</p>
+                    <p class="text-[11px] text-orange-600 dark:text-orange-400 font-semibold truncate">{{ auth.user?.role === 'admin' ? 'Admin Redaksi' : 'Dosen Editor' }}</p>
                   </div>
                 </div>
                 <div class="py-1">
@@ -226,44 +226,24 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-card border-t border-card-border py-12 mt-20">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-card-border">
-          <div class="md:col-span-2">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#FF6EA7] to-[#BA43F6] text-white flex items-center justify-center font-heading font-bold text-sm shadow">
-                AK
-              </div>
-              <span class="font-heading font-bold text-base text-ink">Aksara Kampus</span>
-            </div>
-            <p class="text-xs text-ink-muted leading-relaxed max-w-sm">
-              Wadah apresiasi dan publikasi sastra digital untuk civitas akademika kampus. Menghidupkan tradisi literasi melalui puisi, cerpen, artikel kritis, dan esai.
-            </p>
+    <footer class="bg-card border-t border-card-border mt-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <!-- Kiri: Logo + nama -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FB923C] to-[#EA580C] text-white flex items-center justify-center font-heading font-bold text-sm shadow shrink-0">
+            AK
           </div>
           <div>
-            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Kanal Sastra</h4>
-            <ul class="space-y-2 text-xs text-ink-muted">
-              <li><NuxtLink to="/karya?jenis=puisi" class="hover:text-indigo-brand transition">Puisi Kampus</NuxtLink></li>
-              <li><NuxtLink to="/karya?jenis=cerpen" class="hover:text-indigo-brand transition">Cerita Pendek</NuxtLink></li>
-              <li><NuxtLink to="/karya?jenis=esai" class="hover:text-indigo-brand transition">Esai & Kritik</NuxtLink></li>
-              <li><NuxtLink to="/karya?jenis=artikel" class="hover:text-indigo-brand transition">Artikel Ilmiah Populer</NuxtLink></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Informasi & Akses</h4>
-            <ul class="space-y-2 text-xs text-ink-muted">
-              <li><NuxtLink to="/berita" class="hover:text-indigo-brand transition">Berita & Iklan Kampus</NuxtLink></li>
-              <li><NuxtLink to="/agenda" class="hover:text-indigo-brand transition">Agenda & Sayembara</NuxtLink></li>
-              <li><NuxtLink to="/register" class="hover:text-indigo-brand transition">Gabung Penulis Mahasiswa</NuxtLink></li>
-              <li><NuxtLink to="/login" class="hover:text-indigo-brand transition">Login Dosen & Mahasiswa</NuxtLink></li>
-            </ul>
+            <p class="font-heading font-bold text-sm text-ink leading-tight">Aksara Kampus</p>
+            <p class="text-[11px] text-ink-muted leading-tight">Panel Kontrol Redaksi &amp; Editor Sastra Digital</p>
           </div>
         </div>
-        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-subtle">
-          <span>© {{ new Date().getFullYear() }} Aksara Kampus • Portal Komunitas Sastra</span>
-          <span class="font-medium text-ink-muted">
-            Crafted with ❤️ by <span class="font-semibold text-indigo-brand">Windar Shineta</span> (<span class="italic text-ink">Win Lyricist</span>)
-          </span>
+        <!-- Kanan: Copyright -->
+        <div class="text-right">
+          <p class="text-xs text-ink-muted">
+            © 2026 <span class="font-semibold text-indigo-brand">Windar Shineta</span>. Seluruh Hak Cipta Dilindungi.
+          </p>
+          <p class="text-[11px] text-ink-subtle mt-0.5">Platform Literasi &amp; Publikasi Sastra Mahasiswa Kampus</p>
         </div>
       </div>
     </footer>

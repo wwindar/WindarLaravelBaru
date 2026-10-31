@@ -10,27 +10,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --color-bg: #F8F3FB;
+            /* Light Theme: UMPKU Campus Orange & Warm Clean Canvas */
+            --color-bg: #FAF8F5;
             --color-surface: #FFFFFF;
-            --color-surface-subtle: #F3EBF7;
-            --color-border: #EADBEE;
-            --color-text: #261C33;
-            --color-text-muted: #7E7192;
+            --color-surface-subtle: #F5EFE8;
+            --color-border: #EAE4DC;
+            --color-text: #1C1917;
+            --color-text-muted: #78716C;
 
-            --color-accent: #D946EF;
-            --color-accent-hover: #C026D3;
-            --color-accent-gradient: linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%);
-            --color-accent-soft: #FCE7F6;
-            --color-accent-glow: rgba(217, 70, 239, 0.25);
+            /* Vibrant Campus Orange Accent */
+            --color-accent: #EA580C;
+            --color-accent-hover: #C2410C;
+            --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+            --color-accent-soft: #FFF1EB;
+            --color-accent-glow: rgba(234, 88, 12, 0.25);
 
             --dot-menunggu: #D97706;
             --dot-revisi: #EA580C;
             --dot-terbit: #10B981;
             --dot-ditolak: #EF4444;
-            --dot-laporan: #EC4899;
+            --dot-laporan: #F97316;
 
-            --badge-draf-bg: #EFEBF4;
-            --badge-draf-text: #4B415C;
+            --badge-draf-bg: #EAE4DC;
+            --badge-draf-text: #44403C;
             --badge-menunggu-bg: #FEF3C7;
             --badge-menunggu-text: #92400E;
             --badge-revisi-bg: #FFEDD5;
@@ -40,7 +42,7 @@
             --badge-ditolak-bg: #FEE2E2;
             --badge-ditolak-text: #991B1B;
 
-            --card-shadow: 0 10px 30px -5px rgba(186, 104, 200, 0.1), 0 4px 12px -2px rgba(186, 104, 200, 0.05);
+            --card-shadow: 0 10px 30px -5px rgba(234, 88, 12, 0.08), 0 4px 12px -2px rgba(28, 25, 23, 0.04);
 
             --font-heading: 'Sora', sans-serif;
             --font-body: 'DM Sans', sans-serif;
@@ -48,21 +50,21 @@
 
         @media (prefers-color-scheme: dark) {
             :root:not([data-theme="light"]) {
-                --color-bg: #171426;
-                --color-surface: #221E38;
-                --color-surface-subtle: #2B2647;
-                --color-border: #352E54;
-                --color-text: #F4F0FA;
-                --color-text-muted: #A59BBF;
+                --color-bg: #181513;
+                --color-surface: #24201D;
+                --color-surface-subtle: #2E2824;
+                --color-border: #3A342F;
+                --color-text: #FAF8F5;
+                --color-text-muted: #A8A29E;
 
-                --color-accent: #E84A96;
-                --color-accent-hover: #F43F85;
-                --color-accent-gradient: linear-gradient(135deg, #FF65A5 0%, #B847FA 100%);
-                --color-accent-soft: rgba(232, 74, 150, 0.16);
-                --color-accent-glow: rgba(244, 63, 133, 0.35);
+                --color-accent: #F97316;
+                --color-accent-hover: #EA580C;
+                --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+                --color-accent-soft: rgba(249, 115, 22, 0.16);
+                --color-accent-glow: rgba(249, 115, 22, 0.35);
 
-                --badge-draf-bg: rgba(239, 235, 244, 0.12);
-                --badge-draf-text: #DDD7E6;
+                --badge-draf-bg: rgba(234, 228, 220, 0.12);
+                --badge-draf-text: #E7E5E4;
                 --badge-menunggu-bg: rgba(254, 243, 199, 0.14);
                 --badge-menunggu-text: #FDE68A;
                 --badge-revisi-bg: rgba(255, 237, 213, 0.14);
@@ -77,21 +79,21 @@
         }
 
         [data-theme="dark"] {
-            --color-bg: #171426;
-            --color-surface: #221E38;
-            --color-surface-subtle: #2B2647;
-            --color-border: #352E54;
-            --color-text: #F4F0FA;
-            --color-text-muted: #A59BBF;
+            --color-bg: #181513;
+            --color-surface: #24201D;
+            --color-surface-subtle: #2E2824;
+            --color-border: #3A342F;
+            --color-text: #FAF8F5;
+            --color-text-muted: #A8A29E;
 
-            --color-accent: #E84A96;
-            --color-accent-hover: #F43F85;
-            --color-accent-gradient: linear-gradient(135deg, #FF65A5 0%, #B847FA 100%);
-            --color-accent-soft: rgba(232, 74, 150, 0.16);
-            --color-accent-glow: rgba(244, 63, 133, 0.35);
+            --color-accent: #F97316;
+            --color-accent-hover: #EA580C;
+            --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+            --color-accent-soft: rgba(249, 115, 22, 0.16);
+            --color-accent-glow: rgba(249, 115, 22, 0.35);
 
-            --badge-draf-bg: rgba(239, 235, 244, 0.12);
-            --badge-draf-text: #DDD7E6;
+            --badge-draf-bg: rgba(234, 228, 220, 0.12);
+            --badge-draf-text: #E7E5E4;
             --badge-menunggu-bg: rgba(254, 243, 199, 0.14);
             --badge-menunggu-text: #FDE68A;
             --badge-revisi-bg: rgba(255, 237, 213, 0.14);
@@ -105,27 +107,27 @@
         }
 
         [data-theme="light"] {
-            --color-bg: #F8F3FB;
+            --color-bg: #FAF8F5;
             --color-surface: #FFFFFF;
-            --color-surface-subtle: #F3EBF7;
-            --color-border: #EADBEE;
-            --color-text: #261C33;
-            --color-text-muted: #7E7192;
+            --color-surface-subtle: #F5EFE8;
+            --color-border: #EAE4DC;
+            --color-text: #1C1917;
+            --color-text-muted: #78716C;
 
-            --color-accent: #D946EF;
-            --color-accent-hover: #C026D3;
-            --color-accent-gradient: linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%);
-            --color-accent-soft: #FCE7F6;
-            --color-accent-glow: rgba(217, 70, 239, 0.25);
+            --color-accent: #EA580C;
+            --color-accent-hover: #C2410C;
+            --color-accent-gradient: linear-gradient(135deg, #FB923C 0%, #EA580C 100%);
+            --color-accent-soft: #FFF1EB;
+            --color-accent-glow: rgba(234, 88, 12, 0.25);
 
             --dot-menunggu: #D97706;
             --dot-revisi: #EA580C;
             --dot-terbit: #10B981;
             --dot-ditolak: #EF4444;
-            --dot-laporan: #EC4899;
+            --dot-laporan: #F97316;
 
-            --badge-draf-bg: #EFEBF4;
-            --badge-draf-text: #4B415C;
+            --badge-draf-bg: #EAE4DC;
+            --badge-draf-text: #44403C;
             --badge-menunggu-bg: #FEF3C7;
             --badge-menunggu-text: #92400E;
             --badge-revisi-bg: #FFEDD5;
@@ -437,6 +439,27 @@
         @endif
 
     </main>
+
+    <!-- Footer Baca Naskah Admin -->
+    <footer class="mt-16 border-t py-8 text-xs" style="border-color: var(--color-border); color: var(--color-text-muted); background-color: var(--color-surface);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-white text-xs shadow-sm" style="background: var(--color-accent-gradient);">
+                    AK
+                </div>
+                <div>
+                    <span class="font-bold text-sm" style="color: var(--color-text);">Aksara Kampus</span>
+                    <span class="block text-[11px] opacity-75">Panel Telaah Naskah Redaksi</span>
+                </div>
+            </div>
+            <div class="text-center sm:text-right">
+                <p class="font-medium" style="color: var(--color-text);">
+                    &copy; 2026 <span class="font-bold" style="color: var(--color-accent);">Windar Shineta</span>. Seluruh Hak Cipta Dilindungi.
+                </p>
+                <p class="text-[11px] mt-0.5 opacity-80">Platform Literasi & Publikasi Sastra Mahasiswa Kampus</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
     function promptCatatan(form) {

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 Route::get('/', function () {
@@ -215,9 +216,12 @@ Route::middleware(['auth'])->group(function () {
             'judul' => 'required|string|max:200',
             'ringkasan' => 'nullable|string|max:500',
             'isi' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
             'judul.required' => 'Judul berita / iklan wajib diisi.',
             'isi.required' => 'Isi berita / pengumuman wajib diisi.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
         $baseSlug = Str::slug($validated['judul']);
@@ -228,11 +232,17 @@ Route::middleware(['auth'])->group(function () {
             $counter++;
         }
 
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('berita', 'public');
+        }
+
         Berita::create([
             'user_id' => Auth::id(),
             'judul' => $validated['judul'],
             'slug' => $slug,
             'ringkasan' => $validated['ringkasan'] ?? Str::limit(strip_tags($validated['isi']), 150),
+            'foto' => $fotoPath,
             'isi' => $validated['isi'],
             'status' => 'terbit',
             'diterbitkan_pada' => now(),
@@ -248,6 +258,12 @@ Route::middleware(['auth'])->group(function () {
 
         $berita = Berita::findOrFail($id);
         $judul = $berita->judul;
+
+        // Hapus foto jika ada
+        if ($berita->foto) {
+            Storage::disk('public')->delete($berita->foto);
+        }
+
         $berita->delete();
 
         return redirect()->route('admin.dashboard')->with('success', 'Berita "'.$judul.'" berhasil dihapus.');
