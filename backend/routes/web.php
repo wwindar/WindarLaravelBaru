@@ -96,6 +96,20 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
+    // ── Buka Portal Frontend dengan Sesi Admin (Single Sign-On) ───────────
+    Route::get('/admin/portal', function (Request $request) {
+        $user = Auth::user();
+        if (! $user || ! $user->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+
+        // Hapus token SSO lama dan buat token baru untuk sesi frontend
+        $user->tokens()->where('name', 'portal-sso')->delete();
+        $token = $user->createToken('portal-sso')->plainTextToken;
+
+        return redirect('http://localhost:3000/sso?token=' . urlencode($token));
+    })->name('admin.portal');
+
     // ── Baca detail tulisan ───────────────────────────────────────────────
     Route::get('/admin/tulisan/{id}', function ($id) {
         if (! Auth::user()->isAdmin()) {

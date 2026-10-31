@@ -148,7 +148,7 @@ async function handleLogin() {
 
   try {
     const res = await auth.login(email.value, password.value)
-    if (res.data.user.role === 'dosen') {
+    if (res.data.user.role === 'dosen' || res.data.user.role === 'admin') {
       navigateTo('/dosen')
     } else {
       navigateTo('/mahasiswa')

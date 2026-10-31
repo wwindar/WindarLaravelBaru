@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(() => {
   }
 
   if (auth.user?.role !== 'mahasiswa') {
-    if (auth.user?.role === 'dosen') {
+    if (auth.user?.role === 'dosen' || auth.user?.role === 'admin') {
       return navigateTo('/dosen')
     }
     return navigateTo('/')

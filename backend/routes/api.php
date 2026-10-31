@@ -20,6 +20,8 @@ Route::prefix('auth')->group(function (): void {
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/profil', [AuthController::class, 'updateProfil']);
+        Route::post('/foto', [AuthController::class, 'uploadFoto']);
+        Route::delete('/foto', [AuthController::class, 'hapusFoto']);
         Route::put('/ganti-password', [AuthController::class, 'gantiPassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });

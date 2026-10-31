@@ -23,9 +23,13 @@
     <!-- Dropdown Popover -->
     <div
       v-if="isOpen"
-      class="absolute right-0 mt-2 w-80 sm:w-96 bg-card border border-card-border rounded-2xl shadow-lift z-50 overflow-hidden"
+      class="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl shadow-2xl z-50 overflow-hidden border border-card-border"
+      style="background-color: var(--surface-color);"
     >
-      <div class="p-4 border-b border-card-border flex items-center justify-between bg-canvas/50">
+      <div
+        class="p-4 border-b border-card-border flex items-center justify-between"
+        style="background-color: var(--surface-color);"
+      >
         <div class="flex items-center gap-2">
           <h3 class="font-heading text-sm font-bold text-ink">Notifikasi</h3>
           <span v-if="unreadCount > 0" class="px-2 py-0.5 text-[10px] font-bold bg-indigo-brand text-white rounded-full">
@@ -43,19 +47,19 @@
       </div>
 
       <!-- State: Loading -->
-      <div v-if="isLoading" class="p-6 text-center text-xs text-ink-muted">
+      <div v-if="isLoading" class="p-6 text-center text-xs text-ink-muted" style="background-color: var(--surface-color);">
         <div class="inline-block w-5 h-5 border-2 border-indigo-brand border-t-transparent rounded-full animate-spin mb-2"></div>
         <p>Memuat notifikasi...</p>
       </div>
 
       <!-- State: Error -->
-      <div v-else-if="errorMsg" class="p-4 text-center text-xs text-rose-600 bg-rose-50">
+      <div v-else-if="errorMsg" class="p-4 text-center text-xs text-rose-600 bg-rose-500/10">
         <p>{{ errorMsg }}</p>
         <button @click="fetchNotifications" class="mt-2 text-xs font-semibold text-rose-700 underline">Coba lagi</button>
       </div>
 
       <!-- State: Empty -->
-      <div v-else-if="notifications.length === 0" class="p-8 text-center text-ink-muted">
+      <div v-else-if="notifications.length === 0" class="p-8 text-center text-ink-muted" style="background-color: var(--surface-color);">
         <svg class="w-8 h-8 mx-auto text-ink-subtle mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
         </svg>
@@ -63,27 +67,28 @@
       </div>
 
       <!-- State: Success / List -->
-      <div v-else class="max-h-80 overflow-y-auto divide-y divide-card-border">
+      <div v-else class="max-h-80 overflow-y-auto divide-y divide-card-border" style="background-color: var(--surface-color);">
         <div
           v-for="item in notifications"
           :key="item.id"
-          class="p-3.5 hover:bg-canvas transition flex items-start gap-3 text-xs"
-          :class="{ 'bg-indigo-soft/20': !item.dibaca }"
+          @click="!item.dibaca && markAsRead(item.id)"
+          class="p-3.5 transition flex items-start gap-3 text-xs cursor-pointer select-none"
+          :class="item.dibaca ? 'hover:bg-canvas/40 opacity-75' : 'bg-indigo-soft/25 hover:bg-indigo-soft/35'"
         >
-          <div class="mt-0.5 w-2 h-2 rounded-full shrink-0" :class="item.dibaca ? 'bg-transparent' : 'bg-indigo-brand'"></div>
+          <div class="mt-1 w-2 h-2 rounded-full shrink-0" :class="item.dibaca ? 'bg-transparent' : 'bg-indigo-brand'"></div>
           <div class="flex-1 min-w-0">
-            <p class="font-semibold text-ink">{{ item.judul }}</p>
-            <p class="text-ink-muted mt-0.5 line-clamp-2 text-[11px]">{{ item.pesan }}</p>
-            <span class="text-[10px] text-ink-subtle mt-1 block">{{ formatDate(item.created_at) }}</span>
+            <p class="font-semibold text-ink leading-snug">{{ item.judul }}</p>
+            <p class="text-ink-muted mt-1 leading-relaxed text-[11px]">{{ item.pesan }}</p>
+            <span class="text-[10px] text-ink-subtle mt-1.5 block">{{ formatDate(item.created_at) }}</span>
           </div>
           <button
             v-if="!item.dibaca"
             type="button"
-            @click="markAsRead(item.id)"
-            class="text-[10px] text-indigo-brand hover:underline shrink-0"
-            title="Tandai dibaca"
+            @click.stop="markAsRead(item.id)"
+            class="text-xs font-semibold text-indigo-brand hover:underline shrink-0 px-2 py-1 rounded-lg hover:bg-indigo-brand/10 transition"
+            title="Tandai sudah dibaca"
           >
-            Baca
+            Tandai Dibaca
           </button>
         </div>
       </div>

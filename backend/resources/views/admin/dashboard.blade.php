@@ -284,7 +284,7 @@
                     <span id="themeToggleText" class="hidden sm:inline text-xs">Tema</span>
                 </button>
 
-                <a href="http://localhost:3000" target="_blank" class="btn-outline-subtle px-3.5 py-1.5 text-xs flex items-center gap-1.5">
+                <a href="{{ route('admin.portal') }}" target="_blank" class="btn-outline-subtle px-3.5 py-1.5 text-xs flex items-center gap-1.5" title="Buka Portal Aksara Kampus (Login otomatis sebagai Admin)">
                     <span>Lihat Portal</span>
                     <span class="text-[10px]">&nearr;</span>
                 </a>

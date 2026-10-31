@@ -4,6 +4,13 @@
 
 :root {
   /* Light Theme (uTask Inspired: Pastel Lilac & Vibrant Magenta) */
+  --bg-color: #F8F3FB;
+  --surface-color: #FFFFFF;
+  --border-color: #EADBEE;
+  --text-color: #261C33;
+  --text-muted-color: #7E7192;
+  --accent-color: #D946EF;
+
   --bg-rgb: 248, 243, 251;          /* #F8F3FB */
   --surface-rgb: 255, 255, 255;      /* #FFFFFF */
   --border-rgb: 234, 219, 238;       /* #EADBEE */
@@ -22,6 +29,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* Dark Theme (uTask Inspired: Deep Slate Violet & Glowing Magenta) */
+    --bg-color: #171426;
+    --surface-color: #221E38;
+    --border-color: #352E54;
+    --text-color: #F4F0FA;
+    --text-muted-color: #A59BBF;
+    --accent-color: #E84A96;
+
     --bg-rgb: 23, 20, 38;             /* #171426 */
     --surface-rgb: 34, 30, 56;        /* #221E38 */
     --border-rgb: 53, 46, 84;         /* #352E54 */
@@ -40,6 +54,13 @@
 
 :root[data-theme="dark"],
 .dark {
+  --bg-color: #171426;
+  --surface-color: #221E38;
+  --border-color: #352E54;
+  --text-color: #F4F0FA;
+  --text-muted-color: #A59BBF;
+  --accent-color: #E84A96;
+
   --bg-rgb: 23, 20, 38;
   --surface-rgb: 34, 30, 56;
   --border-rgb: 53, 46, 84;

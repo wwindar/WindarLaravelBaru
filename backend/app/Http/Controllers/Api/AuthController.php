@@ -169,10 +169,79 @@ class AuthController extends Controller
     }
 
     /**
+     * Upload / perbarui foto profil.
+     */
+    public function uploadFoto(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'foto' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+        ], [
+            'foto.required' => 'File foto wajib dipilih.',
+            'foto.image'    => 'File harus berupa gambar.',
+            'foto.mimes'    => 'Format gambar yang diperbolehkan: jpeg, png, jpg, webp.',
+            'foto.max'      => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        $file = $request->file('foto');
+        $ext = $file->getClientOriginalExtension();
+        $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
+
+        $targetDir = public_path('uploads/avatars');
+        if (! file_exists($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        // Hapus foto lama jika ada
+        if ($user->foto && file_exists(public_path($user->foto))) {
+            @unlink(public_path($user->foto));
+        }
+
+        $file->move($targetDir, $filename);
+
+        $relativePath = 'uploads/avatars/' . $filename;
+        $user->update(['foto' => $relativePath]);
+
+        return response()->json([
+            'message' => 'Foto profil berhasil diperbarui.',
+            'data'    => $this->formatUser($user->fresh()),
+        ]);
+    }
+
+    /**
+     * Hapus foto profil (kembali ke avatar inisial).
+     */
+    public function hapusFoto(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->foto && file_exists(public_path($user->foto))) {
+            @unlink(public_path($user->foto));
+        }
+
+        $user->update(['foto' => null]);
+
+        return response()->json([
+            'message' => 'Foto profil berhasil dihapus.',
+            'data'    => $this->formatUser($user->fresh()),
+        ]);
+    }
+
+    /**
      * Helper — format data user ke array yang konsisten.
      */
     private function formatUser(User $user): array
     {
+        $fotoUrl = null;
+        if ($user->foto) {
+            if (str_starts_with($user->foto, 'http://') || str_starts_with($user->foto, 'https://')) {
+                $fotoUrl = $user->foto;
+            } else {
+                $fotoUrl = url($user->foto);
+            }
+        }
+
         return [
             'id'       => $user->id,
             'name'     => $user->name,
@@ -181,6 +250,7 @@ class AuthController extends Controller
             'role'     => $user->role,
             'bio'      => $user->bio,
             'angkatan' => $user->angkatan,
+            'foto'     => $fotoUrl,
         ];
     }
 }

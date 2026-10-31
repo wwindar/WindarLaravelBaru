@@ -10,6 +10,7 @@ export interface AuthUser {
   role: 'mahasiswa' | 'dosen' | string
   bio?: string | null
   angkatan?: string | null
+  foto?: string | null
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -122,6 +123,36 @@ export const useAuthStore = defineStore('auth', () => {
     return res
   }
 
+  async function uploadFoto(file: File) {
+    const formData = new FormData()
+    formData.append('foto', file)
+
+    const res = await $fetch<{ message: string; data: AuthUser }>(`${apiBase}/auth/foto`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        Accept: 'application/json',
+      },
+    })
+    user.value = res.data
+    userCookie.value = res.data
+    return res
+  }
+
+  async function hapusFoto() {
+    const res = await $fetch<{ message: string; data: AuthUser }>(`${apiBase}/auth/foto`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        Accept: 'application/json',
+      },
+    })
+    user.value = res.data
+    userCookie.value = res.data
+    return res
+  }
+
   async function gantiPassword(payload: { password_lama: string; password_baru: string; password_baru_confirmation: string }) {
     const res = await $fetch<{ message: string; data: { token: string } }>(`${apiBase}/auth/ganti-password`, {
       method: 'PUT',
@@ -167,6 +198,8 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchMe,
     updateProfil,
+    uploadFoto,
+    hapusFoto,
     gantiPassword,
   }
 })

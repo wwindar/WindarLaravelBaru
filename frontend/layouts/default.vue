@@ -56,22 +56,30 @@
               <button
                 type="button"
                 @click="showProfilMenu = !showProfilMenu"
-                class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition"
-                :style="{ background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' }"
+                class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition overflow-hidden border border-card-border"
+                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}"
                 :title="auth.user?.name"
                 aria-haspopup="true"
                 :aria-expanded="showProfilMenu"
               >
-                {{ navInitials }}
+                <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
+                <span v-else>{{ navInitials }}</span>
               </button>
               <!-- Dropdown menu -->
               <div
                 v-if="showProfilMenu"
-                class="absolute right-0 mt-2 w-52 bg-card border border-card-border rounded-2xl shadow-lift z-50 overflow-hidden"
+                class="absolute right-0 mt-2 w-56 bg-card border border-card-border rounded-2xl shadow-2xl z-50 overflow-hidden"
+                style="background-color: var(--surface-color);"
               >
-                <div class="px-4 py-3 border-b border-card-border">
-                  <p class="text-xs font-bold text-ink truncate">{{ auth.user?.name }}</p>
-                  <p class="text-[11px] text-ink-muted truncate">@{{ auth.user?.username }}</p>
+                <div class="px-4 py-3 border-b border-card-border flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}">
+                    <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
+                    <span v-else>{{ navInitials }}</span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold text-ink truncate">{{ auth.user?.name }}</p>
+                    <p class="text-[11px] text-ink-muted truncate">@{{ auth.user?.username }}</p>
+                  </div>
                 </div>
                 <div class="py-1">
                   <NuxtLink
@@ -113,8 +121,8 @@
 
           <!-- State: Logged In Dosen / Editor -->
           <template v-else-if="auth.isLoggedIn && auth.isDosen">
-            <span class="text-xs px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 font-bold border border-purple-200 hidden sm:inline">
-              Dosen / Editor
+            <span class="text-xs px-2.5 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300 font-bold border border-fuchsia-500/30 hidden sm:inline">
+              {{ auth.user?.role === 'admin' ? 'Admin Redaksi' : 'Dosen Editor' }}
             </span>
             <NuxtLink to="/dosen" class="nav-item font-semibold text-xs" active-class="nav-item-active">
               Antrean Naskah
@@ -122,14 +130,81 @@
             <NuxtLink to="/dosen/laporan" class="nav-item font-semibold text-xs" active-class="nav-item-active">
               Laporan
             </NuxtLink>
-            <button
-              type="button"
-              @click="auth.logout"
-              class="btn-ghost text-xs px-2.5 py-2 text-rose-600 hover:text-rose-700"
-              title="Keluar akun"
+            <a
+              v-if="auth.user?.role === 'admin'"
+              href="http://127.0.0.1:8000/admin/dashboard"
+              target="_blank"
+              class="btn-secondary text-xs px-2.5 py-1.5 hidden md:inline-flex items-center gap-1.5"
+              title="Buka Dasbor Admin Laravel Backend"
             >
-              Keluar
-            </button>
+              <span>Dasbor Backend</span>
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <!-- Dropdown Profil Dosen / Admin -->
+            <div class="relative" ref="profilDropdownDosen">
+              <button
+                type="button"
+                @click="showProfilMenu = !showProfilMenu"
+                class="w-9 h-9 rounded-xl flex items-center justify-center font-heading font-bold text-white text-xs shadow-md hover:scale-105 transition overflow-hidden border border-card-border"
+                :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}"
+                :title="auth.user?.name"
+              >
+                <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
+                <span v-else>{{ navInitials }}</span>
+              </button>
+              <!-- Dropdown menu -->
+              <div
+                v-if="showProfilMenu"
+                class="absolute right-0 mt-2 w-56 bg-card border border-card-border rounded-2xl shadow-2xl z-50 overflow-hidden"
+                style="background-color: var(--surface-color);"
+              >
+                <div class="px-4 py-3 border-b border-card-border flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-heading font-bold text-white text-[11px]" :style="!auth.user?.foto ? { background: 'linear-gradient(135deg, #FF6EA7 0%, #BA43F6 100%)' } : {}">
+                    <img v-if="auth.user?.foto" :src="auth.user.foto" :alt="auth.user.name" class="w-full h-full object-cover" />
+                    <span v-else>{{ navInitials }}</span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold text-ink truncate">{{ auth.user?.name }}</p>
+                    <p class="text-[11px] text-fuchsia-600 dark:text-fuchsia-400 font-semibold truncate">{{ auth.user?.role === 'admin' ? 'Admin Redaksi' : 'Dosen Editor' }}</p>
+                  </div>
+                </div>
+                <div class="py-1">
+                  <NuxtLink
+                    to="/dosen"
+                    class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-ink hover:bg-indigo-soft/50 transition"
+                    @click="showProfilMenu = false"
+                  >
+                    Antrean Naskah
+                  </NuxtLink>
+                  <NuxtLink
+                    to="/dosen/laporan"
+                    class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-ink hover:bg-indigo-soft/50 transition"
+                    @click="showProfilMenu = false"
+                  >
+                    Laporan Pembaca
+                  </NuxtLink>
+                  <a
+                    v-if="auth.user?.role === 'admin'"
+                    href="http://127.0.0.1:8000/admin/dashboard"
+                    class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-indigo-brand hover:bg-indigo-soft/50 transition font-medium"
+                    @click="showProfilMenu = false"
+                  >
+                    Buka Dasbor Backend →
+                  </a>
+                  <div class="border-t border-card-border mt-1 pt-1">
+                    <button
+                      type="button"
+                      @click="() => { auth.logout(); showProfilMenu = false }"
+                      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-500/10 transition"
+                    >
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </template>
 
           <!-- State: Guest / Belum Login -->
@@ -200,6 +275,7 @@ const auth = useAuthStore()
 const isDark = ref(false)
 const showProfilMenu = ref(false)
 const profilDropdown = ref<HTMLElement | null>(null)
+const profilDropdownDosen = ref<HTMLElement | null>(null)
 
 const navInitials = computed(() => {
   const name = auth.user?.name || ''
@@ -217,7 +293,10 @@ onMounted(() => {
 
     // Tutup dropdown ketika klik di luar
     document.addEventListener('click', (e) => {
-      if (profilDropdown.value && !profilDropdown.value.contains(e.target as Node)) {
+      const target = e.target as Node
+      const isInsideMhs = profilDropdown.value && profilDropdown.value.contains(target)
+      const isInsideDosen = profilDropdownDosen.value && profilDropdownDosen.value.contains(target)
+      if (!isInsideMhs && !isInsideDosen) {
         showProfilMenu.value = false
       }
     })
