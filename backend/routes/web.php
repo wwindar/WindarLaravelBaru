@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\StatusTulisan;
-use App\Models\LaporanTulisan;
+use App\Models\Berita;
 use App\Models\Notifikasi;
 use App\Models\Tulisan;
 use App\Models\User;
@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
@@ -95,6 +96,37 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
+    // ── Baca detail tulisan ───────────────────────────────────────────────
+    Route::get('/admin/tulisan/{id}', function ($id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+        $tulisan = Tulisan::with(['user', 'kategori', 'riwayatStatus'])->findOrFail($id);
+        $laporan = $tulisan->laporan()->latest()->get();
+
+        return view('admin.tulisan.show', compact('tulisan', 'laporan'));
+    })->name('admin.tulisan.show');
+
+    // ── Hapus permanen tulisan ────────────────────────────────────────────
+    Route::delete('/admin/tulisan/{id}', function (Request $request, $id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+        $tulisan = Tulisan::findOrFail($id);
+        $judul = $tulisan->judul;
+
+        // Kirim notifikasi ke penulis sebelum dihapus
+        Notifikasi::create([
+            'user_id' => $tulisan->user_id,
+            'judul' => 'Tulisan Dihapus oleh Admin',
+            'pesan' => 'Tulisan "'.$judul.'" telah dihapus oleh tim redaksi karena melanggar ketentuan.',
+        ]);
+
+        $tulisan->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Tulisan "'.$judul.'" berhasil dihapus.');
+    })->name('admin.tulisan.hapus');
+
     // ── Aksi moderasi tulisan dari web admin ──────────────────────────────
     Route::post('/admin/tulisan/{id}/setujui', function ($id) {
         if (! Auth::user()->isAdmin()) {
@@ -102,17 +134,17 @@ Route::middleware(['auth'])->group(function () {
         }
         $tulisan = Tulisan::findOrFail($id);
         $tulisan->update([
-            'status'          => StatusTulisan::Terbit,
+            'status' => StatusTulisan::Terbit,
             'diterbitkan_pada' => now(),
-            'catatan_editor'  => null,
+            'catatan_editor' => null,
         ]);
         Notifikasi::create([
             'user_id' => $tulisan->user_id,
-            'judul'   => 'Tulisan Disetujui & Terbit',
-            'isi'     => 'Tulisan "' . $tulisan->judul . '" telah disetujui dan kini terbit.',
+            'judul' => 'Tulisan Disetujui & Terbit',
+            'pesan' => 'Tulisan "'.$tulisan->judul.'" telah disetujui dan kini terbit.',
         ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Tulisan "' . $tulisan->judul . '" berhasil diterbitkan.');
+        return redirect()->route('admin.dashboard')->with('success', 'Tulisan "'.$tulisan->judul.'" berhasil diterbitkan.');
     })->name('admin.tulisan.setujui');
 
     Route::post('/admin/tulisan/{id}/revisi', function (Request $request, $id) {
@@ -125,13 +157,13 @@ Route::middleware(['auth'])->group(function () {
         }
         $tulisan = Tulisan::findOrFail($id);
         $tulisan->update([
-            'status'         => StatusTulisan::PerluRevisi,
+            'status' => StatusTulisan::PerluRevisi,
             'catatan_editor' => $catatan,
         ]);
         Notifikasi::create([
             'user_id' => $tulisan->user_id,
-            'judul'   => 'Tulisan Perlu Revisi',
-            'isi'     => 'Tulisan "' . $tulisan->judul . '" perlu direvisi. Catatan: ' . $catatan,
+            'judul' => 'Tulisan Perlu Revisi',
+            'pesan' => 'Tulisan "'.$tulisan->judul.'" perlu direvisi. Catatan: '.$catatan,
         ]);
 
         return redirect()->route('admin.dashboard')->with('success', 'Tulisan dikembalikan untuk direvisi.');
@@ -147,17 +179,65 @@ Route::middleware(['auth'])->group(function () {
         }
         $tulisan = Tulisan::findOrFail($id);
         $tulisan->update([
-            'status'         => StatusTulisan::Ditolak,
+            'status' => StatusTulisan::Ditolak,
             'catatan_editor' => $catatan,
         ]);
         Notifikasi::create([
             'user_id' => $tulisan->user_id,
-            'judul'   => 'Tulisan Ditolak',
-            'isi'     => 'Tulisan "' . $tulisan->judul . '" ditolak. Alasan: ' . $catatan,
+            'judul' => 'Tulisan Ditolak',
+            'pesan' => 'Tulisan "'.$tulisan->judul.'" ditolak. Alasan: '.$catatan,
         ]);
 
         return redirect()->route('admin.dashboard')->with('success', 'Tulisan berhasil ditolak.');
     })->name('admin.tulisan.tolak');
+
+    // ── Kelola Berita / Iklan / Pengumuman oleh Admin ─────────────────────
+    Route::post('/admin/berita', function (Request $request) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+
+        $validated = $request->validate([
+            'judul' => 'required|string|max:200',
+            'ringkasan' => 'nullable|string|max:500',
+            'isi' => 'required|string',
+        ], [
+            'judul.required' => 'Judul berita / iklan wajib diisi.',
+            'isi.required' => 'Isi berita / pengumuman wajib diisi.',
+        ]);
+
+        $baseSlug = Str::slug($validated['judul']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Berita::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        Berita::create([
+            'user_id' => Auth::id(),
+            'judul' => $validated['judul'],
+            'slug' => $slug,
+            'ringkasan' => $validated['ringkasan'] ?? Str::limit(strip_tags($validated['isi']), 150),
+            'isi' => $validated['isi'],
+            'status' => 'terbit',
+            'diterbitkan_pada' => now(),
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Berita / Pengumuman "'.$validated['judul'].'" berhasil diterbitkan!');
+    })->name('admin.berita.store');
+
+    Route::delete('/admin/berita/{id}', function ($id) {
+        if (! Auth::user()->isAdmin()) {
+            return redirect()->route('admin.login')->with('error', 'Akses ditolak.');
+        }
+
+        $berita = Berita::findOrFail($id);
+        $judul = $berita->judul;
+        $berita->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Berita "'.$judul.'" berhasil dihapus.');
+    })->name('admin.berita.hapus');
 
     Route::post('/admin/logout', function (Request $request) {
         Auth::logout();

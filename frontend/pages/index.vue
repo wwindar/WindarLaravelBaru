@@ -177,6 +177,57 @@
       </DataState>
     </section>
 
+    <!-- 3.5. Berita, Iklan & Pengumuman Kampus Terbaru -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="card p-6 sm:p-8 bg-gradient-to-r from-amber-50/50 via-white to-amber-50/30 border-amber-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg shrink-0">
+              📢
+            </div>
+            <div>
+              <h2 class="font-heading text-xl sm:text-2xl font-bold text-ink">Warta & Pengumuman Redaksi</h2>
+              <p class="text-xs text-ink-muted mt-0.5">Info sayembara cipta sastra, seminar kepenulisan, dan iklan kampus resmi.</p>
+            </div>
+          </div>
+          <NuxtLink to="/berita" class="btn-secondary text-xs px-4 py-2 self-start sm:self-auto shrink-0">
+            Lihat Semua Warta →
+          </NuxtLink>
+        </div>
+
+        <div v-if="beritaList.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <article
+            v-for="b in beritaList"
+            :key="b.id"
+            class="p-5 rounded-2xl bg-white border border-card-border hover:border-amber-400 transition shadow-sm flex flex-col justify-between"
+          >
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full inline-block mb-2">
+                Info Resmi
+              </span>
+              <NuxtLink :to="`/berita/${b.slug}`" class="block group">
+                <h3 class="font-heading font-bold text-sm text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
+                  {{ b.judul }}
+                </h3>
+              </NuxtLink>
+              <p class="text-xs text-ink-muted mt-2 line-clamp-2 leading-relaxed">
+                {{ b.ringkasan }}
+              </p>
+            </div>
+            <div class="pt-3 mt-3 border-t border-card-border flex items-center justify-between text-[11px] text-ink-subtle">
+              <span>{{ b.diterbitkan_pada_formatted || formatDate(b.diterbitkan_pada) }}</span>
+              <NuxtLink :to="`/berita/${b.slug}`" class="text-indigo-brand font-semibold hover:underline">
+                Baca →
+              </NuxtLink>
+            </div>
+          </article>
+        </div>
+        <div v-else class="text-center py-6 text-xs text-ink-muted">
+          Belum ada pengumuman resmi yang tayang saat ini.
+        </div>
+      </div>
+    </section>
+
     <!-- 4. Penjelasan Tiga Peran Pengguna -->
     <section class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="card p-8 sm:p-12 border-indigo-brand/20 bg-gradient-to-b from-white to-indigo-soft/20">
@@ -249,6 +300,7 @@ const isLoading = ref(true)
 const errorMessage = ref('')
 const tulisanList = ref<any[]>([])
 const totalKarya = ref(0)
+const beritaList = ref<any[]>([])
 
 function handleHeroSearch() {
   if (searchQuery.value.trim()) {
@@ -272,6 +324,13 @@ async function fetchLatestTulisan() {
   }
 }
 
+async function fetchLatestBerita() {
+  try {
+    const res = await $fetch<any>(`${apiBase}/berita?per_page=3`)
+    beritaList.value = res.data || []
+  } catch {}
+}
+
 function formatDate(iso: string) {
   if (!iso) return 'Baru terbit'
   const d = new Date(iso)
@@ -284,5 +343,6 @@ function formatDate(iso: string) {
 
 onMounted(() => {
   fetchLatestTulisan()
+  fetchLatestBerita()
 })
 </script>

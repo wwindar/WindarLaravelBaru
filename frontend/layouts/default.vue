@@ -18,6 +18,7 @@
         <nav class="hidden md:flex items-center gap-1.5" aria-label="Menu Utama">
           <NuxtLink to="/" class="nav-item" exact-active-class="nav-item-active">Beranda</NuxtLink>
           <NuxtLink to="/karya" class="nav-item" active-class="nav-item-active">Karya Sastra</NuxtLink>
+          <NuxtLink to="/berita" class="nav-item" active-class="nav-item-active">Berita & Pengumuman</NuxtLink>
           <NuxtLink to="/agenda" class="nav-item" active-class="nav-item-active">Agenda Kegiatan</NuxtLink>
         </nav>
 
@@ -106,17 +107,20 @@
             </ul>
           </div>
           <div>
-            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Peran & Akses</h4>
+            <h4 class="font-heading text-xs font-bold text-ink uppercase tracking-wider mb-3">Informasi & Akses</h4>
             <ul class="space-y-2 text-xs text-ink-muted">
+              <li><NuxtLink to="/berita" class="hover:text-indigo-brand transition">Berita & Iklan Kampus</NuxtLink></li>
+              <li><NuxtLink to="/agenda" class="hover:text-indigo-brand transition">Agenda & Sayembara</NuxtLink></li>
               <li><NuxtLink to="/register" class="hover:text-indigo-brand transition">Gabung Penulis Mahasiswa</NuxtLink></li>
               <li><NuxtLink to="/login" class="hover:text-indigo-brand transition">Login Dosen & Mahasiswa</NuxtLink></li>
-              <li><NuxtLink to="/agenda" class="hover:text-indigo-brand transition">Agenda & Sayembara</NuxtLink></li>
             </ul>
           </div>
         </div>
         <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-subtle">
           <span>© {{ new Date().getFullYear() }} Aksara Kampus • Portal Komunitas Sastra</span>
-          <span>Desain Terang & Lembut • InfinityFree Ready</span>
+          <span class="font-medium text-ink-muted">
+            Crafted with ❤️ by <span class="font-semibold text-indigo-brand">Windar Shineta</span> (<span class="italic text-ink">Win Lyricist</span>)
+          </span>
         </div>
       </div>
     </footer>

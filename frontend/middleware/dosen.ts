@@ -5,7 +5,9 @@ export default defineNuxtRouteMiddleware(() => {
     return navigateTo('/login')
   }
 
-  if (auth.user?.role !== 'dosen') {
+  // 'admin' dan 'dosen' keduanya bisa akses halaman dosen/redaksi
+  const isDosOrAdmin = auth.user?.role === 'dosen' || auth.user?.role === 'admin'
+  if (!isDosOrAdmin) {
     if (auth.user?.role === 'mahasiswa') {
       return navigateTo('/mahasiswa')
     }

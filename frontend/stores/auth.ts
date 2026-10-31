@@ -30,7 +30,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => !!token.value)
   const isMahasiswa = computed(() => user.value?.role === 'mahasiswa')
-  const isDosen = computed(() => user.value?.role === 'dosen')
+  // 'admin' dan 'dosen' dianggap setara sebagai redaksi
+  const isDosen = computed(() => user.value?.role === 'dosen' || user.value?.role === 'admin')
 
   // Sinkronkan state dengan cookie
   watch(token, (val) => {

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AgendaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\DosenTulisanController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\MahasiswaTulisanController;
@@ -33,6 +34,10 @@ Route::get('/agenda/{slug}', [AgendaController::class, 'show']);
 Route::get('/tulisan', [PublicTulisanController::class, 'index']);
 Route::get('/tulisan/{slug}', [PublicTulisanController::class, 'show']);
 Route::post('/tulisan/{id}/lapor', [PublicTulisanController::class, 'lapor']);
+
+// Berita & Pengumuman terbit
+Route::get('/berita', [BeritaController::class, 'index']);
+Route::get('/berita/{slug}', [BeritaController::class, 'show']);
 
 // =========================================================================
 // Mahasiswa — Penulis Tulisan

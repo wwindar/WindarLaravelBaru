@@ -41,6 +41,7 @@
         $perluRevisi   = \App\Models\Tulisan::where('status', 'perlu_revisi')->count();
         $ditolak       = \App\Models\Tulisan::where('status', 'ditolak')->count();
         $laporan       = \App\Models\LaporanTulisan::where('status', 'menunggu')->count();
+        $totalBerita   = \App\Models\Berita::count();
 
         $antrean       = \App\Models\Tulisan::with(['user', 'kategori'])
                             ->where('status', 'menunggu')
@@ -53,13 +54,30 @@
                             ->latest()
                             ->take(10)
                             ->get();
+
+        $beritaList    = \App\Models\Berita::with('penulis')
+                            ->latest()
+                            ->take(10)
+                            ->get();
     @endphp
 
     <main class="max-w-6xl mx-auto p-6 space-y-6">
 
+        @if(session('success'))
+            <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-semibold">
+                ✅ {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold">
+                ⚠️ {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Statistik -->
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-            <div class="col-span-2 md:col-span-1 p-5 rounded-2xl bg-[#1a1514] border border-[#2c2523]">
+            <div class="p-5 rounded-2xl bg-[#1a1514] border border-[#2c2523]">
                 <p class="text-xs uppercase text-stone-500 font-semibold">Total Tulisan</p>
                 <p class="text-3xl font-bold text-white mt-1">{{ $totalTulisan }}</p>
             </div>
@@ -75,13 +93,13 @@
                 <p class="text-xs uppercase text-stone-500 font-semibold">Perlu Revisi</p>
                 <p class="text-3xl font-bold text-sky-400 mt-1">{{ $perluRevisi }}</p>
             </div>
-            <div class="p-5 rounded-2xl bg-[#1a1514] border border-red-500/20">
-                <p class="text-xs uppercase text-stone-500 font-semibold">Ditolak</p>
-                <p class="text-3xl font-bold text-red-400 mt-1">{{ $ditolak }}</p>
-            </div>
             <div class="p-5 rounded-2xl bg-[#1a1514] border border-purple-500/20">
                 <p class="text-xs uppercase text-stone-500 font-semibold">Laporan</p>
                 <p class="text-3xl font-bold text-purple-400 mt-1">{{ $laporan }}</p>
+            </div>
+            <div class="p-5 rounded-2xl bg-[#1a1514] border border-amber-500/20">
+                <p class="text-xs uppercase text-amber-500 font-semibold">Blog & Iklan</p>
+                <p class="text-3xl font-bold text-amber-400 mt-1">{{ $totalBerita }}</p>
             </div>
         </div>
 
@@ -120,6 +138,10 @@
                                 <td class="py-3 px-4 text-xs text-stone-500">{{ $t->updated_at?->format('d M Y') }}</td>
                                 <td class="py-3 px-4">
                                     <div class="flex gap-2">
+                                        <a href="{{ route('admin.tulisan.show', $t->id) }}"
+                                           class="px-2.5 py-1 rounded-lg bg-[#E89B5B]/10 border border-[#E89B5B]/30 text-[#E89B5B] text-xs font-semibold hover:bg-[#E89B5B]/20">
+                                            👁 Baca
+                                        </a>
                                         <form method="POST" action="{{ url('/admin/tulisan/'.$t->id.'/setujui') }}">
                                             @csrf
                                             <button type="submit" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20">
@@ -150,6 +172,109 @@
             @endif
         </div>
 
+        <!-- Panel Kelola Blog Iklan & Berita Terbaru (Khusus Admin / Redaksi) -->
+        <div class="p-6 rounded-2xl bg-[#1a1514] border border-amber-500/30 space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-[#2c2523]">
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold mb-1">
+                        📢 Akses Khusus Admin
+                    </div>
+                    <h2 class="text-lg font-bold text-white">Kelola Blog Iklan, Berita & Pengumuman Kampus</h2>
+                    <p class="text-xs text-stone-400 mt-0.5">Hanya akun Administrator yang berhak menerbitkan atau menghapus berita, info sayembara, maupun pengumuman resmi.</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 text-xs font-semibold">{{ $totalBerita }} Berita Aktif</span>
+            </div>
+
+            <!-- Formulir Buat Berita / Iklan Baru -->
+            <form action="{{ url('/admin/berita') }}" method="POST" class="space-y-4 p-5 rounded-xl bg-[#221c1a] border border-[#2c2523]">
+                @csrf
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span>✍️</span> Buat Pengumuman / Iklan / Berita Baru
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-[#edd0b2] mb-1.5 uppercase">Judul Berita / Iklan</label>
+                        <input 
+                            type="text" 
+                            name="judul" 
+                            placeholder="Contoh: Info Lomba Puisi Nasional atau Iklan Seminar..."
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#1a1514] border border-[#2c2523] text-white placeholder-stone-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#edd0b2] mb-1.5 uppercase">Ringkasan Singkat (Opsional)</label>
+                        <input 
+                            type="text" 
+                            name="ringkasan" 
+                            placeholder="Penjelasan ringkas untuk tampilan kartu berita..."
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#1a1514] border border-[#2c2523] text-white placeholder-stone-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" 
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#edd0b2] mb-1.5 uppercase">Isi Lengkap Berita / Iklan</label>
+                    <textarea 
+                        name="isi" 
+                        rows="4"
+                        placeholder="Tuliskan isi pengumuman atau konten promosi secara detail di sini..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-[#1a1514] border border-[#2c2523] text-white placeholder-stone-600 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-sans" 
+                        required
+                    ></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs shadow-lg transition">
+                        🚀 Terbitkan Berita / Iklan Sekarang
+                    </button>
+                </div>
+            </form>
+
+            <!-- Tabel Daftar Berita Aktif -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-bold text-white flex items-center justify-between">
+                    <span>📰 Daftar Berita / Iklan yang Sedang Tayang</span>
+                </h3>
+
+                @if($beritaList->isEmpty())
+                    <p class="text-stone-500 text-xs py-4 text-center">Belum ada berita atau iklan yang diterbitkan.</p>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase text-stone-500 border-b border-[#2c2523]">
+                                <tr>
+                                    <th class="py-3 px-4">Judul Pengumuman</th>
+                                    <th class="py-3 px-4">Penulis (Admin)</th>
+                                    <th class="py-3 px-4">Tanggal Tayang</th>
+                                    <th class="py-3 px-4">Aksi Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#2c2523]">
+                                @foreach($beritaList as $b)
+                                <tr class="hover:bg-[#221c1a]">
+                                    <td class="py-3 px-4 font-semibold text-white max-w-sm">
+                                        <p class="truncate">{{ $b->judul }}</p>
+                                        <p class="text-xs text-stone-500 line-clamp-1 font-normal">{{ $b->ringkasan }}</p>
+                                    </td>
+                                    <td class="py-3 px-4 text-xs text-stone-400">{{ $b->penulis?->name ?? 'Admin Redaksi' }}</td>
+                                    <td class="py-3 px-4 text-xs text-stone-500">{{ $b->diterbitkan_pada?->format('d M Y') ?? $b->created_at->format('d M Y') }}</td>
+                                    <td class="py-3 px-4">
+                                        <form method="POST" action="{{ url('/admin/berita/'.$b->id) }}" onsubmit="return confirm('Hapus berita/iklan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-500/20">
+                                                🗑 Hapus Berita
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
+
         <!-- Tulisan Terbaru (selain menunggu) -->
         <div class="p-6 rounded-2xl bg-[#1a1514] border border-[#2c2523] space-y-4">
             <h2 class="text-lg font-bold text-white">📋 Semua Tulisan Terbaru</h2>
@@ -166,6 +291,7 @@
                                 <th class="py-3 px-4">Jenis</th>
                                 <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4">Tanggal</th>
+                                <th class="py-3 px-4">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#2c2523]">
@@ -192,6 +318,21 @@
                                     </span>
                                 </td>
                                 <td class="py-3 px-4 text-xs text-stone-500">{{ $t->updated_at?->format('d M Y') }}</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex gap-2">
+                                        <a href="{{ route('admin.tulisan.show', $t->id) }}"
+                                           class="px-2.5 py-1 rounded-lg bg-[#E89B5B]/10 border border-[#E89B5B]/30 text-[#E89B5B] text-xs font-semibold hover:bg-[#E89B5B]/20">
+                                            👁 Baca
+                                        </a>
+                                        <form method="POST" action="{{ url('/admin/tulisan/'.$t->id) }}" onsubmit="return confirm('Hapus permanen tulisan ini?\nTidak dapat dibatalkan.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-500/20">
+                                                🗑 Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

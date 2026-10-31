@@ -29,6 +29,14 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'dosen',
             ],
+            // Akun admin web (bisa login di /admin/login dengan email bebas)
+            [
+                'name' => 'Admin Redaksi',
+                'username' => 'admin.redaksi',
+                'email' => 'admin@kampus.ac.id',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ],
         ];
 
         foreach ($dosens as $dosen) {

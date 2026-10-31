@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.token' => AdminTokenMiddleware::class,
             'role' => EnsureRole::class,
         ]);
+
+        // Arahkan redirect auth ke halaman login admin (bukan route 'login' default)
+        $middleware->redirectGuestsTo('/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -9,8 +9,11 @@
 <script setup lang="ts">
 const auth = useAuthStore()
 
-onMounted(() => {
-  auth.restoreSession()
+onMounted(async () => {
+  // Pulihkan sesi dari cookie jika ada token tersimpan
+  if (auth.token) {
+    await auth.fetchMe()
+  }
 })
 </script>
 
