@@ -15,7 +15,7 @@
         </NuxtLink>
 
         <!-- Navigation Links (Desktop) -->
-        <nav class="hidden md:flex items-center gap-1.5" aria-label="Menu Utama">
+        <nav class="hidden md:flex items-center gap-1.5 select-none" aria-label="Menu Utama">
           <NuxtLink to="/" class="nav-item" exact-active-class="nav-item-active">Beranda</NuxtLink>
           <NuxtLink to="/karya" class="nav-item" active-class="nav-item-active">Karya Sastra</NuxtLink>
           <NuxtLink to="/berita" class="nav-item" active-class="nav-item-active">Berita & Pengumuman</NuxtLink>
@@ -299,16 +299,7 @@ function toggleTheme() {
 
 <style scoped>
 .nav-item {
-  @apply px-3.5 py-2 rounded-xl text-xs font-medium text-ink-muted hover:text-ink hover:bg-indigo-soft/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-brand;
-}
-.nav-item-active {
-  @apply text-indigo-brand bg-indigo-soft font-semibold;
-}
-</style>
-
-<style scoped>
-.nav-item {
-  @apply px-3.5 py-2 rounded-xl text-xs font-medium text-ink-muted hover:text-ink hover:bg-indigo-soft/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-brand;
+  @apply px-3.5 py-2 rounded-xl text-xs font-medium text-ink-muted hover:text-ink hover:bg-indigo-soft/50 transition-colors select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-brand;
 }
 .nav-item-active {
   @apply text-indigo-brand bg-indigo-soft font-semibold;

@@ -222,29 +222,49 @@
           </NuxtLink>
         </div>
 
-        <div v-if="beritaList.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div v-if="beritaList.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <article
             v-for="b in beritaList"
             :key="b.id"
-            class="p-5 rounded-2xl bg-card border border-card-border hover:border-amber-400 transition shadow-sm flex flex-col justify-between"
+            class="rounded-2xl bg-card border border-card-border hover:border-amber-400 transition shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden group"
           >
             <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full inline-block mb-2 border border-amber-500/20">
-                Info Resmi
-              </span>
-              <NuxtLink :to="`/berita/${b.slug}`" class="block group">
-                <h3 class="font-heading font-bold text-sm text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
-                  {{ b.judul }}
-                </h3>
+              <!-- Foto / Poster Acara Berita -->
+              <NuxtLink :to="`/berita/${b.slug}`" class="block relative aspect-video sm:h-40 overflow-hidden bg-amber-50 dark:bg-card-border/30">
+                <img
+                  v-if="b.foto_url"
+                  :src="b.foto_url"
+                  :alt="b.judul"
+                  class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
+                />
+                <div v-else class="w-full h-full flex flex-col items-center justify-center text-amber-600/70">
+                  <span class="text-3xl">📢</span>
+                  <span class="text-[10px] font-semibold text-ink-subtle mt-1">Pengumuman Kampus</span>
+                </div>
+                <div class="absolute top-3 left-3">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-white/95 dark:bg-card/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-amber-300 shadow-xs">
+                    Info Resmi
+                  </span>
+                </div>
               </NuxtLink>
-              <p class="text-xs text-ink-muted mt-2 line-clamp-2 leading-relaxed">
-                {{ b.ringkasan }}
-              </p>
+
+              <!-- Isi Konten Kartu -->
+              <div class="p-5">
+                <NuxtLink :to="`/berita/${b.slug}`" class="block group">
+                  <h3 class="font-heading font-bold text-base text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
+                    {{ b.judul }}
+                  </h3>
+                </NuxtLink>
+                <p class="text-xs text-ink-muted mt-2 line-clamp-2 leading-relaxed">
+                  {{ b.ringkasan }}
+                </p>
+              </div>
             </div>
-            <div class="pt-3 mt-3 border-t border-card-border flex items-center justify-between text-[11px] text-ink-subtle">
+
+            <div class="px-5 pb-5 pt-3 border-t border-card-border flex items-center justify-between text-xs text-ink-subtle">
               <span>{{ b.diterbitkan_pada_formatted || formatDate(b.diterbitkan_pada) }}</span>
-              <NuxtLink :to="`/berita/${b.slug}`" class="text-indigo-brand font-semibold hover:underline">
-                Baca →
+              <NuxtLink :to="`/berita/${b.slug}`" class="text-indigo-brand font-semibold hover:underline inline-flex items-center gap-1">
+                Baca Warta <span>→</span>
               </NuxtLink>
             </div>
           </article>

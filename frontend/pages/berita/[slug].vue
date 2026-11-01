@@ -29,6 +29,11 @@
           </span>
         </div>
 
+        <!-- Foto Banner Berita (Jika Ada) -->
+        <div v-if="berita.foto_url" class="rounded-2xl overflow-hidden border border-card-border max-h-96 shadow-xs">
+          <img :src="berita.foto_url" :alt="berita.judul" class="w-full h-full object-cover" />
+        </div>
+
         <!-- Judul & Info Penulis (Admin) -->
         <div>
           <h1 class="font-heading text-2xl sm:text-4xl font-extrabold text-ink leading-tight mb-3">

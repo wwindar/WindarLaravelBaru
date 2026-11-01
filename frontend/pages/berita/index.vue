@@ -46,30 +46,45 @@
         <article
           v-for="item in beritaList"
           :key="item.id"
-          class="card card-hover p-6 flex flex-col justify-between"
+          class="card card-hover overflow-hidden flex flex-col justify-between group"
         >
           <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
-                Pengumuman Resmi
-              </span>
-              <span class="text-[11px] text-ink-subtle">
-                {{ item.diterbitkan_pada_formatted || formatDate(item.diterbitkan_pada) }}
-              </span>
-            </div>
-
-            <NuxtLink :to="`/berita/${item.slug}`" class="block group">
-              <h2 class="font-heading text-lg font-bold text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
-                {{ item.judul }}
-              </h2>
+            <!-- Thumbnail Foto Berita -->
+            <NuxtLink :to="`/berita/${item.slug}`" class="block relative aspect-video overflow-hidden bg-amber-50 dark:bg-card-border/30">
+              <img
+                v-if="item.foto_url"
+                :src="item.foto_url"
+                :alt="item.judul"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              />
+              <div v-else class="w-full h-full flex flex-col items-center justify-center text-amber-600/70">
+                <span class="text-3xl">📢</span>
+              </div>
+              <div class="absolute top-3 left-3">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-white/95 dark:bg-card/95 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-amber-300 shadow-xs">
+                  Pengumuman Resmi
+                </span>
+              </div>
             </NuxtLink>
 
-            <p class="text-xs text-ink-muted mt-2.5 line-clamp-3 leading-relaxed">
-              {{ item.ringkasan || 'Klik selengkapnya untuk membaca pengumuman lengkap ini.' }}
-            </p>
+            <div class="p-6">
+              <span class="text-[11px] text-ink-subtle block mb-2">
+                {{ item.diterbitkan_pada_formatted || formatDate(item.diterbitkan_pada) }}
+              </span>
+
+              <NuxtLink :to="`/berita/${item.slug}`" class="block group">
+                <h2 class="font-heading text-lg font-bold text-ink group-hover:text-indigo-brand transition line-clamp-2 leading-snug">
+                  {{ item.judul }}
+                </h2>
+              </NuxtLink>
+
+              <p class="text-xs text-ink-muted mt-2.5 line-clamp-3 leading-relaxed">
+                {{ item.ringkasan || 'Klik selengkapnya untuk membaca pengumuman lengkap ini.' }}
+              </p>
+            </div>
           </div>
 
-          <div class="pt-4 mt-5 border-t border-card-border flex items-center justify-between text-xs text-ink-muted">
+          <div class="px-6 pb-6 pt-3 border-t border-card-border flex items-center justify-between text-xs text-ink-muted">
             <span class="font-medium text-ink truncate">
               Oleh {{ item.penulis?.name }}
             </span>
