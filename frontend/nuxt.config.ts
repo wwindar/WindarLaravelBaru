@@ -5,9 +5,16 @@ export default defineNuxtConfig({
 
   ssr: false, // SPA Mode untuk static hosting / InfinityFree
 
+  nitro: {
+    routeRules: {
+      '/api/**': { proxy: 'http://127.0.0.1:8000/api/**' },
+      '/storage/**': { proxy: 'http://127.0.0.1:8000/storage/**' },
+    },
+  },
+
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8001/api',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
     },
   },
 
